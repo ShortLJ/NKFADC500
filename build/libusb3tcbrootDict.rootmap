@@ -1,4 +1,0 @@
-[ libusb3tcbrootDict.so ]
-# List of selected classes
-class usb3tcbroot
-header usb3tcbroot.h

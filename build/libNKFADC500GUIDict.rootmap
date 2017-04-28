@@ -1,8 +1,0 @@
-[ libNKFADC500GUIDict.so ]
-# List of selected classes
-class FADC500gui
-class FADC500run
-class FADC500setting
-header FADC500gui.h
-header FADC500run.h
-header FADC500setting.h
