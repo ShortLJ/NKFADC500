@@ -1,0 +1,4 @@
+[ libusb3comrootDict.so ]
+# List of selected classes
+class usb3comroot
+header usb3comroot.h

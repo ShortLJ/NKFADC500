@@ -1,0 +1,4 @@
+[ libNKUSBROOTDict.so ]
+# List of selected classes
+class NKUSBROOT
+header NKUSBROOT.h

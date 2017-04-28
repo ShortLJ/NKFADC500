@@ -1,0 +1,4 @@
+[ libNoticeTCBIBSROOTDict.so ]
+# List of selected classes
+class NKTCBIBS
+header NoticeTCBIBSROOT.h

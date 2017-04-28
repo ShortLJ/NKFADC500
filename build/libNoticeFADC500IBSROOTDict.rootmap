@@ -1,0 +1,4 @@
+[ libNoticeFADC500IBSROOTDict.so ]
+# List of selected classes
+class NKFADC500IBS
+header NoticeFADC500IBSROOT.h
