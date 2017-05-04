@@ -1,3 +1,11 @@
+/************************************************************
+NKFADC500 GUI system
+Made by Byul Moon.
+FADC500run.h header file
+Run NKFADC500 DAQ and save data.
+May. 1. 2017.
+***********************************************************/
+
 #ifndef NFADCrun_H
 #define NFADCrun_H
 
@@ -14,7 +22,7 @@
 class FADC500run
 {
 	private:
-		unsigned char data[DATA_ARRAY_SIZE];      // raw data array
+		unsigned char data[6][DATA_ARRAY_SIZE];      // raw data array
 		int adc;                         // ADC data
 		int tdc;                         // TDC data
 		int data_length;                 // data length
@@ -29,7 +37,8 @@ class FADC500run
 		int trigger_pattern;             // trigger pattern from fadc500-ibs
 		unsigned long ltime;             // starting time of waveform
 		unsigned int evtn;               // event number counter
-		unsigned long bcount;            // buffer counter	
+		unsigned int iEvent;               // event number counter
+		unsigned long bcount[6];            // buffer counter	
 
 		int rl;
 		int hist_point;                  // number of samples to show
@@ -53,6 +62,8 @@ class FADC500run
 
 	public:
 		int flag;
+		int adcflag;
+		int tdcflag;
 		TCanvas* c1;
 		TCanvas* c2;
 

@@ -1,9 +1,16 @@
+/************************************************************
+NKFADC500 GUI system
+Made by Byul Moon.
+FADC500setting.h header file
+Save setting parameters to TCB module.
+May. 1. 2017.
+***********************************************************/
+
 #ifndef FADC500setting_H
 #define FADC500setting_H
 
 #include <unistd.h>
 #include <stdio.h>
-#include "TStyle.h"
 
 
 class FADC500setting

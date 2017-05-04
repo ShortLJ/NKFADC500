@@ -1,3 +1,11 @@
+/************************************************************
+NKFADC500 GUI system
+Made by Byul Moon.
+FADC500gui.cc source file
+GUI builder for NKFADC500 DAQ.
+May. 1. 2017.
+***********************************************************/
+
 #include "TROOT.h"
 #include "TApplication.h"
 #include "TGDockableFrame.h"
@@ -59,7 +67,7 @@
 using namespace std;
 
 
-const char gAboutFADC500[] = "\
+const char gAboutNKFADC500[] = "\
 				NKFADC500 GUI DAQ Program\n\
 Notice Korea Flash ADC 500MHz(NKFADC500).\n\
 GUI Program is built by Byul Moon from Korea Univerity.\n\
@@ -617,6 +625,25 @@ FADC500gui::FADC500gui()
 	fCompositeFrame2->AddFrame(monitorADC, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
 	monitorADC->MoveResize(10,10,1000,500);
 
+	TGTextButton *ADCON = new TGTextButton(fCompositeFrame2,"HIST ON",-1,TGTextButton::GetDefaultGC()(),TGTextButton::GetDefaultFontStruct(),kRaisedFrame);
+    ADCON -> Connect("Clicked()", "FADC500gui", this, "ADCOn()");
+    ADCON->SetTextJustify(36);
+    ADCON->SetMargins(0,0,0,0);
+    ADCON->SetWrapLength(-1);
+    ADCON->Resize(100,35);
+    fCompositeFrame2->AddFrame(ADCON, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+    ADCON->MoveResize(1050,100,100,35);
+
+	TGTextButton *ADCOFF = new TGTextButton(fCompositeFrame2,"HIST OFF",-1,TGTextButton::GetDefaultGC()(),TGTextButton::GetDefaultFontStruct(),kRaisedFrame);
+    ADCOFF -> Connect("Clicked()", "FADC500gui", this, "ADCOff()");
+    ADCOFF->SetTextJustify(36);
+    ADCOFF->SetMargins(0,0,0,0);
+    ADCOFF->SetWrapLength(-1);
+    ADCOFF->Resize(100,35);
+    fCompositeFrame2->AddFrame(ADCOFF, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+    ADCOFF->MoveResize(1050,150,100,35);
+
+
 	// container for tab3
 	TGCompositeFrame *fCompositeFrame3;
 	fCompositeFrame3 = fTab1 -> AddTab("Online TDC Monitoring");
@@ -632,7 +659,32 @@ FADC500gui::FADC500gui()
 	fCompositeFrame3->AddFrame(monitorTDC, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
 	monitorTDC->MoveResize(10,10,1000,500);
 
+	TGTextButton *TDCON = new TGTextButton(fCompositeFrame3,"HIST ON",-1,TGTextButton::GetDefaultGC()(),TGTextButton::GetDefaultFontStruct(),kRaisedFrame);
+    TDCON -> Connect("Clicked()", "FADC500gui", this, "TDCOn()");
+    TDCON->SetTextJustify(36);
+    TDCON->SetMargins(0,0,0,0);
+    TDCON->SetWrapLength(-1);
+    TDCON->Resize(100,35);
+    fCompositeFrame3->AddFrame(TDCON, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+    TDCON->MoveResize(1050,100,100,35);
 
+	TGTextButton *TDCOFF = new TGTextButton(fCompositeFrame3,"HIST OFF",-1,TGTextButton::GetDefaultGC()(),TGTextButton::GetDefaultFontStruct(),kRaisedFrame);
+    TDCOFF -> Connect("Clicked()", "FADC500gui", this, "TDCOff()");
+    TDCOFF->SetTextJustify(36);
+    TDCOFF->SetMargins(0,0,0,0);
+    TDCOFF->SetWrapLength(-1);
+    TDCOFF->Resize(100,35);
+    fCompositeFrame3->AddFrame(TDCOFF, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+    TDCOFF->MoveResize(1050,150,100,35);
+
+
+
+	TGLabel *lCOPYRIGHT = new TGLabel(fMainFrame1073, "Copyright by B. Moon");
+    lCOPYRIGHT -> SetTextJustify(kTextLeft);
+    lCOPYRIGHT -> SetMargins(0, 0, 0, 0);
+    lCOPYRIGHT -> SetWrapLength(-1);
+    fMainFrame1073 -> AddFrame(lCOPYRIGHT, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
+    lCOPYRIGHT -> MoveResize(1050, 590, 200, 20);
 
 
 
@@ -806,33 +858,42 @@ void FADC500gui::OpenSetting()
 		}
 	}
     savesetting.close();
-/*
-    cout << "Number of mmodules : " << nModule << endl;
+
+    cout << "Number of modules : " << nModule << endl;
     cout << "Number of events : " << nEvent << endl;
-    cout << "Pedestal trigger interval : " << fset.ptrig_interval << endl;
-    cout << "Digitizing length type : " << fset.rl << endl;
-    cout << "Trigger type : " << fset.tlt << endl;
-    cout << "Trigger delay : " << fset.trigdly << endl;
-    cout << "Trigger coincidence time window : " << fset.cw_tcb << endl;
-    cout << "Coincidnece time window : " << fset.cw << endl;
-    cout << "ADC offset : " << fset.offset << endl;
-    cout << "ADC delay : " << fset.dly << endl;
-    cout << "ADC threshold : " << fset.thr << endl;
-    cout << "TDC threshold : " << fset.tdc_thr << endl;
-    cout << "Pulse polarity : " << fset.pol << endl;
-    cout << "Peak sum width : " << fset.psw << endl;
-    cout << "ADC mode : " << fset.amode << endl;
-    cout << "Pulse count threshold : " << fset.pct << endl;
-    cout << "Pulse count interval : " << fset.pci << endl;
-    cout << "Pulse width threshold : " << fset.pwt << endl;
-    cout << "Trigger deadtime : " << fset.dt << endl;
-    cout << "Pulse count trigger : " << fset.ten << endl;
-    cout << "Pulse width trigger : " << fset.tew << endl;
-    cout << "Peak sum trigger : " << fset.tep << endl;
-    cout << "Peak sum OR trigger : " << fset.tep2 << endl;
-    cout << "Zero suppression : " << fset.zerosup << endl;
+	cout << "Pedestal trigger interval : " << fset.ptrig_interval << endl;
+	cout << "Trigger delay : " << fset.trigdly << endl;
+	cout << "Trigger coincidence time window : " << fset.cw_tcb << endl;
+	cout << "Pulse count trigger : " << fset.ten << endl;
+	cout << "Pulse width trigger : " << fset.tew << endl;
+	cout << "Peak sum trigger : " << fset.tep << endl;
+	cout << "Peak sum OR trigger : " << fset.tep2 << endl;
+
+	for (int i = 0; i < 6; i++)
+	{
+		cout << "*************** Module #" << i+1 << " ****************" << endl;
+		cout << "Digitizing length type : " << fset.rl[i] << endl;
+		cout << "Trigger type : " << fset.tlt[i] << endl;
+		for (int j = 0; j < 4; j++)
+		{
+			cout << "*************** Channel #" << j+1 << " ****************" << endl;
+			cout << "Coincidnece time window : " << fset.cw[i][j] << endl;
+			cout << "ADC offset : " << fset.offset[i][j] << endl;
+			cout << "ADC delay : " << fset.dly[i][j] << endl;
+			cout << "ADC threshold : " << fset.thr[i][j] << endl;
+			cout << "TDC threshold : " << fset.tdc_thr[i][j] << endl;
+			cout << "Pulse polarity : " << fset.pol[i][j] << endl;
+			cout << "Peak sum width : " << fset.psw[i][j] << endl;
+			cout << "ADC mode : " << fset.amode[i][j] << endl;
+			cout << "Pulse count threshold : " << fset.pct[i][j] << endl;
+			cout << "Pulse count interval : " << fset.pci[i][j] << endl;
+			cout << "Pulse width threshold : " << fset.pwt[i][j] << endl;
+			cout << "Trigger deadtime : " << fset.dt[i][j] << endl;
+			cout << "Zero suppression : " << fset.zerosup[i][j] << endl;
+		}
+	}
 	cout << "***** Finished loading parameters. *****" << endl;
-*/
+
 	SetParGUI();
 }
 
@@ -936,17 +997,17 @@ void FADC500gui::HandleMenu(Int_t menu_id)
 			OpenSetting();
 			break;
 		case M_HELP_ABOUT:
-			hd = new TRootHelpDialog(0, "About NFADC500", 750, 250);
-			hd->SetText(gAboutFADC500);
+			hd = new TRootHelpDialog(0, "About NKFADC500", 750, 250);
+			hd->SetText(gAboutNKFADC500);
 			hd->Popup();
 			break;
 		case M_HELP_MANUAL:
-			hd = new TRootHelpDialog(0, "NFADC500 Manual", 1000, 500);
+			hd = new TRootHelpDialog(0, "NKFADC500 Manual", 1000, 500);
 			hd->SetText(gMANUAL);
 			hd->Popup();
 			break;
 		case M_HELP_CONTACT:
-			hd = new TRootHelpDialog(0, "NFADC500 Contact Information", 750, 250);
+			hd = new TRootHelpDialog(0, "NKFADC500 Contact Information", 750, 250);
 			hd->SetText(gCONTACT);
 			hd->Popup();
 			break;
@@ -1512,5 +1573,29 @@ void FADC500gui::RunDAQ()
 void FADC500gui::StopDAQ()
 {
 	frun.flag = 0;
+	gSystem -> ProcessEvents();
+}
+
+void FADC500gui::ADCOn()
+{
+	frun.adcflag = 1;
+	gSystem -> ProcessEvents();
+}
+
+void FADC500gui::ADCOff()
+{
+	frun.adcflag = 0;
+	gSystem -> ProcessEvents();
+}
+
+void FADC500gui::TDCOn()
+{
+	frun.tdcflag = 1;
+	gSystem -> ProcessEvents();
+}
+
+void FADC500gui::TDCOff()
+{
+	frun.tdcflag = 0;
 	gSystem -> ProcessEvents();
 }

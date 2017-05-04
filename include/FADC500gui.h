@@ -1,3 +1,11 @@
+/************************************************************
+NKFADC500 GUI system
+Made by Byul Moon.
+FADC500gui.h header file
+GUI builder for NKFADC500 DAQ.
+May. 1. 2017.
+***********************************************************/
+
 #ifndef FADC500GUI_H
 #define FADC500GUI_H
 
@@ -60,7 +68,7 @@ class FADC500gui
 
 		int nEvent;
 		int nModule;
-
+/*
 		int module_id;
 		int channel_id;
 		unsigned long rl;
@@ -78,7 +86,7 @@ class FADC500gui
 		unsigned long pwt;
 		unsigned long dt;
         unsigned long zerosup;
-
+*/
 
 		TString saveFile;
 		TString directory;
@@ -172,6 +180,11 @@ class FADC500gui
 		void SetTCB();
 		void RunDAQ();
 		void StopDAQ();
+		void ADCOn();
+		void ADCOff();
+		void TDCOn();
+		void TDCOff();
+
 };
 #endif
 
