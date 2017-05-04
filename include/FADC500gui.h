@@ -68,26 +68,7 @@ class FADC500gui
 
 		int nEvent;
 		int nModule;
-/*
-		int module_id;
-		int channel_id;
-		unsigned long rl;
-		unsigned long tlt;
-		unsigned long cw;
-		unsigned long offset;
-		unsigned long dly;
-		unsigned long thr;
-		unsigned long tdc_thr;
-		unsigned long pol;
-		unsigned long psw;
-		unsigned long amode;
-		unsigned long pct;
-		unsigned long pci;
-		unsigned long pwt;
-		unsigned long dt;
-        unsigned long zerosup;
-*/
-
+		int tcbflag = 0;
 		TString saveFile;
 		TString directory;
 

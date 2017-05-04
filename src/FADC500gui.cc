@@ -1590,14 +1590,28 @@ void FADC500gui::SetSame()
 void FADC500gui::SetTCB()
 {
 	fset.FADC500ParSetting();
+	tcbflag = 1;
 }
 
 void FADC500gui::RunDAQ()
 {
 	TString datafile = directory + saveFile;
 
-	frun.FADC500DAQRun(datafile, nEvent, nModule);
-}	
+	if (datafile.Length() >= 1 && tcbflag == 1)
+	{
+		frun.FADC500DAQRun(datafile, nEvent, nModule);
+		tcbflag = 0;
+	}	
+	if (datafile.Length() == 0)
+	{
+		cout << "Please save your directory and filename for data." << endl;
+	}
+	if (tcbflag == 0)
+	{
+		cout << "Please activate TCB first." << endl;
+	}
+
+}
 
 void FADC500gui::StopDAQ()
 {
