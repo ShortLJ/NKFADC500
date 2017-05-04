@@ -679,7 +679,7 @@ FADC500gui::FADC500gui()
 
 
 
-	TGLabel *lCOPYRIGHT = new TGLabel(fMainFrame1073, "Copyright by B. Moon");
+	TGLabel *lCOPYRIGHT = new TGLabel(fMainFrame1073, "Copyright 2017. B. Moon");
     lCOPYRIGHT -> SetTextJustify(kTextLeft);
     lCOPYRIGHT -> SetMargins(0, 0, 0, 0);
     lCOPYRIGHT -> SetWrapLength(-1);
@@ -1036,6 +1036,7 @@ void FADC500gui::SetDataRange(int value)
 {
 	TGComboBox *object = (TGComboBox *) gTQSender;
   	Int_t module = object -> WidgetId();
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
 	if (value == 0)
 	{
 		fset.rl[module] = 1;
@@ -1094,6 +1095,7 @@ void FADC500gui::SetTrigType(int value)
 {
 	TGComboBox *object = (TGComboBox *) gTQSender;
   	Int_t module = object -> WidgetId();
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
 	if (value == 0)
 	{
 		fset.tlt[module] = 0x0000;
@@ -1223,6 +1225,8 @@ void FADC500gui::SetCoinWidth(char* value)
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
 	fset.cw[module][channel] = atoi(value);
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 	cout << "***** Coincidence Width : " << fset.cw[module][channel] << " ns *****" << endl;
 }
 
@@ -1233,6 +1237,8 @@ void FADC500gui::SetADCThr(char* value)
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
 	fset.thr[module][channel] = atoi(value);
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 	cout << "***** ADC Threshold : " << fset.thr[module][channel]*0.5 << " mV *****" << endl;
 }
 
@@ -1243,6 +1249,8 @@ void FADC500gui::SetTDCThr(char* value)
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
 	fset.tdc_thr[module][channel] = atoi(value);
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 	cout << "***** Pedestal Trigger interval : " << fset.tdc_thr[module][channel]*0.5 << " mV *****" << endl;
 }
 
@@ -1253,6 +1261,8 @@ void FADC500gui::SetPCT(char* value)
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
 	fset.pct[module][channel] = atoi(value);
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 	cout << "***** Pulse Count Threshold : " << fset.pct[module][channel] << " *****" << endl;
 }
 
@@ -1263,6 +1273,8 @@ void FADC500gui::SetPCI(char* value)
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
 	fset.pci[module][channel] = atoi(value);
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 	cout << "***** Pulse Count Interval : " << fset.pci[module][channel] << " ns *****" << endl;
 }
 
@@ -1273,6 +1285,8 @@ void FADC500gui::SetPWT(char* value)
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
 	fset.pwt[module][channel] = atoi(value);
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 	cout << "***** Pulse Width Threshold : " << fset.pwt[module][channel] << " ns *****" << endl;
 }
 
@@ -1283,6 +1297,8 @@ void FADC500gui::SetTrigDead(char* value)
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
 	fset.dt[module][channel] = atoi(value);
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 	cout << "***** Trigger Deadtime : " << fset.dt[module][channel] << " ns *****" << endl;
 }
 
@@ -1292,6 +1308,9 @@ void FADC500gui::SetZeroSup(int value)
   	Int_t widgetID = object -> WidgetId();
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
+
 	if (value == 0)
 	{
 		fset.zerosup[module][channel] = 1;
@@ -1366,6 +1385,8 @@ void FADC500gui::SetPol(int value)
   	Int_t widgetID = object -> WidgetId();
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 
 
 	if (value == 0)
@@ -1386,6 +1407,8 @@ void FADC500gui::SetOffset(char* value)
   	Int_t widgetID = object -> WidgetId();
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 
 
 	fset.offset[module][channel] = atoi(value);
@@ -1398,6 +1421,8 @@ void FADC500gui::SetADCDelay(char* value)
   	Int_t widgetID = object -> WidgetId();
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 
 
 	fset.dly[module][channel] = atoi(value);
@@ -1410,6 +1435,8 @@ void FADC500gui::SetPSumWidth(char* value)
   	Int_t widgetID = object -> WidgetId();
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 
 
 	fset.psw[module][channel] = atoi(value);
@@ -1422,6 +1449,8 @@ void FADC500gui::SetADCMode(int value)
   	Int_t widgetID = object -> WidgetId();
 	Int_t module = widgetID/100;
 	Int_t channel = (widgetID%100)/10;
+	cout << "***** Module ID : " << module+1 << " *****" << endl;
+	cout << "***** Channel ID : " << channel+1 << " *****" << endl;
 
 
 	if (value == 0)
