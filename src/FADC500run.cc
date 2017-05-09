@@ -79,12 +79,10 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 		for(int imod = 0; imod < nMod; imod++)
 		{
 			gSystem->ProcessEvents();
-			bcount[imod] = fadc->FADC500IBSread_BCOUNT(sid[imod]);
+			bcount = fadc->FADC500IBSread_BCOUNT(sid[imod]);
 
-			if (bcount[imod])
+			if (bcount)
 			{
-				cout << "Module ID : " << smid[imod] << endl;
-				printf("Mod[%d] bcount = %ld\n",sid[imod],bcount[imod]);
 				if (datasize[smid[imod]] == 128)
 				{
 					Data1(sid[imod], smid[imod]);
@@ -140,13 +138,13 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 					gSystem->ProcessEvents();
 				}
 
-				iEvent++;
 			}
 
 			if (flag == 0)	break;			
 			gSystem->ProcessEvents();
 
 		}
+		iEvent++;
 		gSystem->ProcessEvents();
 
 		if (iEvent >= nEvent)	break;
@@ -179,6 +177,7 @@ void FADC500run::Data1(int &sid, int &smid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
 	{
+		printf("Mod[%d] bcount = %ld\n",sid,bcount);
 		for (int isize = 0; isize < datasize[smid]; isize++)
 		{
 			data1[ibunch][isize] = data[ibunch*datasize[smid]+isize];
@@ -418,6 +417,7 @@ void FADC500run::Data2(int &sid, int &smid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
 	{
+		printf("Mod[%d] bcount = %ld\n",sid,bcount);
 		for (int isize = 0; isize < datasize[smid]; isize++)
 		{
 			data2[ibunch][isize] = data[ibunch*datasize[smid]+isize];
@@ -657,6 +657,7 @@ void FADC500run::Data4(int &sid, int &smid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
 	{
+		printf("Mod[%d] bcount = %ld\n",sid,bcount);
 		for (int isize = 0; isize < datasize[smid]; isize++)
 		{
 			data4[ibunch][isize] = data[ibunch*datasize[smid]+isize];
@@ -895,6 +896,7 @@ void FADC500run::Data8(int &sid, int &smid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
 	{
+		printf("Mod[%d] bcount = %ld\n",sid,bcount);
 		for (int isize = 0; isize < datasize[smid]; isize++)
 		{
 			data8[ibunch][isize] = data[ibunch*datasize[smid]+isize];
@@ -1133,6 +1135,7 @@ void FADC500run::Data16(int &sid, int &smid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
 	{
+		printf("Mod[%d] bcount = %ld\n",sid,bcount);
 		for (int isize = 0; isize < datasize[smid]; isize++)
 		{
 			data16[ibunch][isize] = data[ibunch*datasize[smid]+isize];
@@ -1371,6 +1374,7 @@ void FADC500run::Data32(int &sid, int &smid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
 	{
+		printf("Mod[%d] bcount = %ld\n",sid,bcount);
 		for (int isize = 0; isize < datasize[smid]; isize++)
 		{
 			data32[ibunch][isize] = data[ibunch*datasize[smid]+isize];
@@ -1609,6 +1613,7 @@ void FADC500run::Data64(int &sid, int &smid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
 	{
+		printf("Mod[%d] bcount = %ld\n",sid,bcount);
 		for (int isize = 0; isize < datasize[smid]; isize++)
 		{
 			data64[ibunch][isize] = data[ibunch*datasize[smid]+isize];
@@ -1847,8 +1852,7 @@ void FADC500run::Data128(int &sid, int &smid)
 {
 	fadc->FADC500IBSread_DATA(sid, datasize[smid]/1024, data128);
 	fwrite(data128, 1, datasize[smid], fp);
-	cout << "Data array length : " << sizeof(data128)/sizeof(*data128) << endl;
-	cout << "Data array size : " << sizeof(data128) << endl;
+	printf("Mod[%d] bcount = %ld\n",sid,bcount);
 
 	gSystem->ProcessEvents();
 
@@ -2079,8 +2083,7 @@ void FADC500run::Data256(int &sid, int &smid)
 {
 	fadc->FADC500IBSread_DATA(sid, datasize[smid]/1024, data256);
 	fwrite(data256, 1, datasize[smid], fp);
-	cout << "Data array length : " << sizeof(data256)/sizeof(*data256) << endl;
-	cout << "Data array size : " << sizeof(data256) << endl;
+	printf("Mod[%d] bcount = %ld\n",sid,bcount);
 
 	gSystem->ProcessEvents();
 

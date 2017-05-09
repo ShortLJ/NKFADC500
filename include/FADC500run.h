@@ -52,7 +52,7 @@ class FADC500run
 		unsigned long ltime;             // starting time of waveform
 		unsigned int evtn;               // event number counter
 		unsigned int iEvent;               // event number counter
-		unsigned long bcount[6];            // buffer counter	
+		unsigned long bcount;            // buffer counter	
 
 		int rl;
 		int hist_point;                  // number of samples to show
