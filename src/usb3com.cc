@@ -116,6 +116,7 @@ int USB3Read(uint16_t vendor_id, uint16_t product_id, unsigned char sid, uint32_
   nbulk = count / 4096;
   remains = count % 4096;
 
+
   if (!(buffer = (unsigned char *)malloc(size))) {
     fprintf(stderr, "USB3Read: Could not allocate memory (size = %d\n)", size);
     return -1;

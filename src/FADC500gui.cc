@@ -1590,6 +1590,14 @@ void FADC500gui::SetSame()
 void FADC500gui::SetTCB()
 {
 	fset.FADC500ParSetting();
+	for (int i = 0; i < 6; i++)
+	{
+		frun.datasize[i] = int(fset.rl[i]*128);
+	}
+	for (int i = 0; i < fset.module_count; i++)
+	{
+		frun.smid[i] = int(fset.mid[i]);
+	}
 	tcbflag = 1;
 }
 

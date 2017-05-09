@@ -13,6 +13,10 @@ May. 1. 2017.
 #include <stdio.h>
 #include "TCanvas.h"
 #include "TH1F.h"
+#include "usb3tcbroot.h"
+#include "usb3comroot.h"
+#include "NoticeTCBIBSROOT.h"
+#include "NoticeFADC500IBSROOT.h"
 
 #define PC_DRAM_SIZE      10                           // available PC DRAM size in Mbyte
 #define DATA_ARRAY_SIZE   PC_DRAM_SIZE*1024*1024       // array size in byte
@@ -22,7 +26,17 @@ May. 1. 2017.
 class FADC500run
 {
 	private:
-		unsigned char data[6][DATA_ARRAY_SIZE];      // raw data array
+		unsigned char data[16384];
+		unsigned char data1[128][128];      // raw data array
+		unsigned char data2[64][256];      // raw data array
+		unsigned char data4[32][512];      // raw data array
+		unsigned char data8[16][1024];      // raw data array
+		unsigned char data16[8][2048];      // raw data array
+		unsigned char data32[4][4096];      // raw data array
+		unsigned char data64[2][8192];      // raw data array
+		unsigned char data128[16384];      // raw data array
+		unsigned char data256[32768];      // raw data array
+//		unsigned char data[6][DATA_ARRAY_SIZE];      // raw data array
 		int adc;                         // ADC data
 		int tdc;                         // TDC data
 		int data_length;                 // data length
@@ -59,8 +73,12 @@ class FADC500run
 
 		int i, j, k;
 
+		usb3comroot *usb;
+		NKFADC500IBS *fadc;
 
 	public:
+		int datasize[6];
+		int smid[6];
 		int flag;
 		int adcflag;
 		int tdcflag;
@@ -78,6 +96,15 @@ class FADC500run
 		TH1F *hostd4 = 0;
 
 		int FADC500DAQRun(TString ifilename, int nEvent, int nModule);
+		void Data1(int &sid, int &smid);
+		void Data2(int &sid, int &smid);
+		void Data4(int &sid, int &smid);
+		void Data8(int &sid, int &smid);
+		void Data16(int &sid, int &smid);
+		void Data32(int &sid, int &smid);
+		void Data64(int &sid, int &smid);
+		void Data128(int &sid, int &smid);
+		void Data256(int &sid, int &smid);
 };
 #endif
 

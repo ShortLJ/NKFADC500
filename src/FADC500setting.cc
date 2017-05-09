@@ -10,6 +10,7 @@ May. 1. 2017.
 #include <stdio.h>
 #include "TSystem.h"
 #include "FADC500setting.h"
+#include "FADC500run.h"
 #include "usb3tcbroot.h"
 #include "NoticeTCBIBSROOT.h"
 #include "NoticeFADC500IBSROOT.h"
@@ -126,4 +127,7 @@ void FADC500setting::FADC500ParSetting()
 	tcb->TCBIBSclose(sid);
 	usb->USB3TCBExit(0);
 	printf("All parameter setting has been successfully finished.\n");
+
+	delete usb;
+	delete tcb;
 }

@@ -13,7 +13,7 @@ public:
 	int FADC500IBSopen(int sid, libusb_context *ctx);
 	void FADC500IBSclose(int sid);
 	unsigned long FADC500IBSread_BCOUNT(int sid);
-	void FADC500IBSread_DATA(int sid, int bcount, unsigned char *data);
+	void FADC500IBSread_DATA(int sid, double bcount, unsigned char *data);
 
 	ClassDef(NKFADC500IBS, 0) // NKFADC500IBS wrapper class for root
 };

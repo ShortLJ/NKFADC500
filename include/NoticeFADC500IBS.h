@@ -13,7 +13,7 @@ extern "C" {
 extern int FADC500IBSopen(int sid, libusb_context *ctx);
 extern void FADC500IBSclose(int sid);
 extern unsigned long FADC500IBSread_BCOUNT(int sid);
-extern void FADC500IBSread_DATA(int sid, int bcount, unsigned char *data);
+extern void FADC500IBSread_DATA(int sid, double bcount, unsigned char *data);
 
 #ifdef __cplusplus
 }

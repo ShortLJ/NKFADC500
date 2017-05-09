@@ -40,12 +40,12 @@ unsigned long FADC500IBSread_BCOUNT(int sid)
 
 // read data, reads bcount * 1 kbytes data from FADC500IBS DRAM
 // returns character raw data, needs sorting after data acquisition
-void FADC500IBSread_DATA(int sid, int bcount, unsigned char *data)
+void FADC500IBSread_DATA(int sid, double bcount, unsigned char *data)
 {
   int count;
 
   // maximum data size is 64 Mbyte
-  count = bcount * 256;
+  count = int(bcount * 256);
   //extern int USB3Read(uint16_t vendor_id, uint16_t product_id, unsigned char sid, uint32_t count, uint32_t addr, unsigned char *data);
   USB3Read(FADC500IBS_VENDOR_ID, FADC500IBS_PRODUCT_ID, sid, count, 0x40000000, data);
 }

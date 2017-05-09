@@ -26,7 +26,7 @@ unsigned long NKFADC500IBS::FADC500IBSread_BCOUNT(int sid)
 	return ::FADC500IBSread_BCOUNT(sid);
 }
 
-void NKFADC500IBS::FADC500IBSread_DATA(int sid, int bcount, unsigned char *data)
+void NKFADC500IBS::FADC500IBSread_DATA(int sid, double bcount, unsigned char *data)
 {
 	::FADC500IBSread_DATA(sid, bcount, data);
 }
