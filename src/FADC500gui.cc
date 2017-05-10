@@ -1594,10 +1594,6 @@ void FADC500gui::SetTCB()
 	{
 		frun.datasize[i] = int(fset.rl[i]*128);
 	}
-	for (int i = 0; i < fset.module_count; i++)
-	{
-		frun.smid[i] = int(fset.mid[i]);
-	}
 	tcbflag = 1;
 }
 

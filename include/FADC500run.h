@@ -17,11 +17,7 @@ May. 1. 2017.
 #include "usb3comroot.h"
 #include "NoticeTCBIBSROOT.h"
 #include "NoticeFADC500IBSROOT.h"
-
-#define PC_DRAM_SIZE      10                           // available PC DRAM size in Mbyte
-#define DATA_ARRAY_SIZE   PC_DRAM_SIZE*1024*1024       // array size in byte
-#define CHUNK_SIZE        PC_DRAM_SIZE*1024            // array size in kilobyte
-
+#include <vector>
 
 class FADC500run
 {
@@ -36,7 +32,7 @@ class FADC500run
 		unsigned char data64[2][8192];      // raw data array
 		unsigned char data128[16384];      // raw data array
 		unsigned char data256[32768];      // raw data array
-//		unsigned char data[6][DATA_ARRAY_SIZE];      // raw data array
+		std::vector <int> sid;
 		int adc;                         // ADC data
 		int tdc;                         // TDC data
 		int data_length;                 // data length
@@ -50,7 +46,6 @@ class FADC500run
 		int local_tnum;                  // local trigger # from fadc500-ibs
 		int trigger_pattern;             // trigger pattern from fadc500-ibs
 		unsigned long ltime;             // starting time of waveform
-		unsigned int evtn;               // event number counter
 		unsigned int iEvent;               // event number counter
 		unsigned long bcount;            // buffer counter	
 
@@ -59,8 +54,6 @@ class FADC500run
 		float hist_range;                // histogram range
 
 		FILE *fp;                        // data file
-		int bufcnt;                      // size of buffer data to be read
-		int chunk, slice;
 		unsigned long ltmp;
 		unsigned int itmp;
 
@@ -71,14 +64,11 @@ class FADC500run
 
 		FILE *lfp;
 
-		int i, j, k;
-
 		usb3comroot *usb;
 		NKFADC500IBS *fadc;
 
 	public:
 		int datasize[6];
-		int smid[6];
 		int flag;
 		int adcflag;
 		int tdcflag;
@@ -96,15 +86,16 @@ class FADC500run
 		TH1F *hostd4 = 0;
 
 		int FADC500DAQRun(TString ifilename, int nEvent, int nModule);
-		void Data1(int &sid, int &smid);
-		void Data2(int &sid, int &smid);
-		void Data4(int &sid, int &smid);
-		void Data8(int &sid, int &smid);
-		void Data16(int &sid, int &smid);
-		void Data32(int &sid, int &smid);
-		void Data64(int &sid, int &smid);
-		void Data128(int &sid, int &smid);
-		void Data256(int &sid, int &smid);
+		void Data1(int &sid);
+		void Data2(int &sid);
+		void Data4(int &sid);
+		void Data8(int &sid);
+		void Data16(int &sid);
+		void Data32(int &sid);
+		void Data64(int &sid);
+		void Data128(int &sid);
+		void Data256(int &sid);
+		void clearall();
 };
 #endif
 

@@ -25,19 +25,14 @@ May. 1. 2017.
 
 using namespace std;
 
-#define PC_DRAM_SIZE      10                           // available PC DRAM size in Mbyte
-#define DATA_ARRAY_SIZE   PC_DRAM_SIZE*1024*1024       // array size in byte
-#define CHUNK_SIZE        PC_DRAM_SIZE*1024            // array size in kilobyte
-
 
 int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 {
 	const int nMod = nModule;
-	vector <int> sid;
-	for (i = 0; i < nMod; i++)
+	for (int imod = 0; imod < nMod; imod++)
 	{
-		sid.push_back(i+1);
-		printf("Serial ID : %d\n", sid[i]);
+		sid.push_back(imod+1);
+		printf("Serial ID : %d\n", sid[imod]);
 	}
 
 	gSystem->ProcessEvents();
@@ -49,14 +44,9 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 
 	fadc = new NKFADC500IBS;
 
-	for(i = 0; i< nMod; i++)
+	for(int imod = 0; imod < nMod; imod++)
 	{
-		fadc->FADC500IBSopen(sid[i], 0);
-	}
-
-	for (i = 0; i < 6; i++)
-	{
-		cout << "Data size for channel " << i+1 << " : " << datasize[i] << endl;
+		fadc->FADC500IBSopen(sid[imod], 0);
 	}
 
 	TString filename = ifilename;
@@ -83,68 +73,68 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 
 			if (bcount)
 			{
-				if (datasize[smid[imod]] == 128)
+				if (datasize[imod] == 128)
 				{
-					Data1(sid[imod], smid[imod]);
+					Data1(sid[imod]);
 					if (flag == 0)	break;			
 					gSystem->ProcessEvents();
 				}
-				if (datasize[smid[imod]] == 256)
+				if (datasize[imod] == 256)
 				{
-					Data2(sid[imod], smid[imod]);
+					Data2(sid[imod]);
 					if (flag == 0)	break;
 					gSystem->ProcessEvents();
 				}
-				if (datasize[smid[imod]] == 512)
+				if (datasize[imod] == 512)
 				{
-					Data4(sid[imod], smid[imod]);
+					Data4(sid[imod]);
 					if (flag == 0)	break;
 					gSystem->ProcessEvents();
 				}
-				if (datasize[smid[imod]] == 1024)
+				if (datasize[imod] == 1024)
 				{
-					Data8(sid[imod], smid[imod]);
+					Data8(sid[imod]);
 					if (flag == 0)	break;
 					gSystem->ProcessEvents();
 				}
-				if (datasize[smid[imod]] == 2048)
+				if (datasize[imod] == 2048)
 				{
-					Data16(sid[imod], smid[imod]);
+					Data16(sid[imod]);
 					if (flag == 0)	break;
 					gSystem->ProcessEvents();
 				}
-				if (datasize[smid[imod]] == 4096)
+				if (datasize[imod] == 4096)
 				{
-					Data32(sid[imod], smid[imod]);
+					Data32(sid[imod]);
 					if (flag == 0)	break;
 					gSystem->ProcessEvents();
 				}
-				if (datasize[smid[imod]] == 8192)
+				if (datasize[imod] == 8192)
 				{
-					Data64(sid[imod], smid[imod]);
+					Data64(sid[imod]);
 					if (flag == 0)	break;
 					gSystem->ProcessEvents();
 				}
-				if (datasize[smid[imod]] == 16384)
+				if (datasize[imod] == 16384)
 				{
-					Data128(sid[imod], smid[imod]);
+					Data128(sid[imod]);
 					if (flag == 0)	break;
 					gSystem->ProcessEvents();
 				}
-				if (datasize[smid[imod]] == 32768)
+				if (datasize[imod] == 32768)
 				{
-					Data256(sid[imod], smid[imod]);
+					Data256(sid[imod]);
 					if (flag == 0)	break;
 					gSystem->ProcessEvents();
 				}
 
 			}
 
+			iEvent++;
 			if (flag == 0)	break;			
 			gSystem->ProcessEvents();
 
 		}
-		iEvent++;
 		gSystem->ProcessEvents();
 
 		if (iEvent >= nEvent)	break;
@@ -168,23 +158,42 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 	delete usb;
 	delete fadc;
 
+	clearall();
+
 	return 0;
 
 }
 
-void FADC500run::Data1(int &sid, int &smid)
+void FADC500run::clearall()
+{
+	hoscd1 = 0;
+	hoscd2 = 0;
+	hoscd3 = 0;
+	hoscd4 = 0;
+
+	hostd1 = 0;
+	hostd2 = 0;
+	hostd3 = 0;
+	hostd4 = 0;
+
+	memset(data, 0, sizeof(data));
+	bcount = 0;
+	sid.clear();
+}
+
+void FADC500run::Data1(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
-	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
+	for (int ibunch = 0; ibunch < 128; ibunch++)
 	{
 		printf("Mod[%d] bcount = %ld\n",sid,bcount);
-		for (int isize = 0; isize < datasize[smid]; isize++)
+		for (int isize = 0; isize < 128; isize++)
 		{
-			data1[ibunch][isize] = data[ibunch*datasize[smid]+isize];
+			data1[ibunch][isize] = data[ibunch*128+isize];
 		}
 		gSystem->ProcessEvents();
 
-		fwrite(data1[ibunch], 1, datasize[smid], fp);
+		fwrite(data1[ibunch], 1, 128, fp);
 
 		data_length =  data1[ibunch][0] & 0xFF;
 		itmp = data1[ibunch][1] & 0xFF;
@@ -363,7 +372,7 @@ void FADC500run::Data1(int &sid, int &smid)
 				hostd3->Reset();
 				hostd4->Reset();
 
-				for (j=0; j<(hist_point / 4); j++)
+				for (int j=0; j<(hist_point / 4); j++)
 				{
 					tdc = (data1[ibunch][32+j*8+1] >> 4) & 0xF;
 					itmp = (data1[ibunch][32+j*8+3] >> 4) & 0xF;
@@ -412,19 +421,19 @@ void FADC500run::Data1(int &sid, int &smid)
 
 }
 
-void FADC500run::Data2(int &sid, int &smid)
+void FADC500run::Data2(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
-	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
+	for (int ibunch = 0; ibunch < 64; ibunch++)
 	{
 		printf("Mod[%d] bcount = %ld\n",sid,bcount);
-		for (int isize = 0; isize < datasize[smid]; isize++)
+		for (int isize = 0; isize < 256; isize++)
 		{
-			data2[ibunch][isize] = data[ibunch*datasize[smid]+isize];
+			data2[ibunch][isize] = data[ibunch*256+isize];
 		}
 		gSystem->ProcessEvents();
 
-		fwrite(data2[ibunch], 1, datasize[smid], fp);
+		fwrite(data2[ibunch], 1, 256, fp);
 
 		data_length =  data2[ibunch][0] & 0xFF;
 		itmp = data2[ibunch][1] & 0xFF;
@@ -603,7 +612,7 @@ void FADC500run::Data2(int &sid, int &smid)
 				hostd3->Reset();
 				hostd4->Reset();
 
-				for (j=0; j<(hist_point / 4); j++)
+				for (int j=0; j<(hist_point / 4); j++)
 				{
 					tdc = (data2[ibunch][32+j*8+1] >> 4) & 0xF;
 					itmp = (data2[ibunch][32+j*8+3] >> 4) & 0xF;
@@ -652,19 +661,19 @@ void FADC500run::Data2(int &sid, int &smid)
 
 }
 
-void FADC500run::Data4(int &sid, int &smid)
+void FADC500run::Data4(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
-	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
+	for (int ibunch = 0; ibunch < 32; ibunch++)
 	{
 		printf("Mod[%d] bcount = %ld\n",sid,bcount);
-		for (int isize = 0; isize < datasize[smid]; isize++)
+		for (int isize = 0; isize < 512; isize++)
 		{
-			data4[ibunch][isize] = data[ibunch*datasize[smid]+isize];
+			data4[ibunch][isize] = data[ibunch*512+isize];
 		}
 		gSystem->ProcessEvents();
 
-		fwrite(data4[ibunch], 1, datasize[smid], fp);
+		fwrite(data4[ibunch], 1, 512, fp);
 
 		data_length =  data4[ibunch][0] & 0xFF;
 		itmp = data4[ibunch][1] & 0xFF;
@@ -843,7 +852,7 @@ void FADC500run::Data4(int &sid, int &smid)
 				hostd3->Reset();
 				hostd4->Reset();
 
-				for (j=0; j<(hist_point / 4); j++)
+				for (int j=0; j<(hist_point / 4); j++)
 				{
 					tdc = (data4[ibunch][32+j*8+1] >> 4) & 0xF;
 					itmp = (data4[ibunch][32+j*8+3] >> 4) & 0xF;
@@ -891,19 +900,19 @@ void FADC500run::Data4(int &sid, int &smid)
 
 }
 
-void FADC500run::Data8(int &sid, int &smid)
+void FADC500run::Data8(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
-	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
+	for (int ibunch = 0; ibunch < 16; ibunch++)
 	{
 		printf("Mod[%d] bcount = %ld\n",sid,bcount);
-		for (int isize = 0; isize < datasize[smid]; isize++)
+		for (int isize = 0; isize < 1024; isize++)
 		{
-			data8[ibunch][isize] = data[ibunch*datasize[smid]+isize];
+			data8[ibunch][isize] = data[ibunch*1024+isize];
 		}
 		gSystem->ProcessEvents();
 
-		fwrite(data8[ibunch], 1, datasize[smid], fp);
+		fwrite(data8[ibunch], 1, 1024, fp);
 
 		data_length =  data8[ibunch][0] & 0xFF;
 		itmp = data8[ibunch][1] & 0xFF;
@@ -1082,7 +1091,7 @@ void FADC500run::Data8(int &sid, int &smid)
 				hostd3->Reset();
 				hostd4->Reset();
 
-				for (j=0; j<(hist_point / 4); j++)
+				for (int j=0; j<(hist_point / 4); j++)
 				{
 					tdc = (data8[ibunch][32+j*8+1] >> 4) & 0xF;
 					itmp = (data8[ibunch][32+j*8+3] >> 4) & 0xF;
@@ -1130,19 +1139,19 @@ void FADC500run::Data8(int &sid, int &smid)
 
 }
 
-void FADC500run::Data16(int &sid, int &smid)
+void FADC500run::Data16(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
-	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
+	for (int ibunch = 0; ibunch < 8; ibunch++)
 	{
 		printf("Mod[%d] bcount = %ld\n",sid,bcount);
-		for (int isize = 0; isize < datasize[smid]; isize++)
+		for (int isize = 0; isize < 2048; isize++)
 		{
-			data16[ibunch][isize] = data[ibunch*datasize[smid]+isize];
+			data16[ibunch][isize] = data[ibunch*2048+isize];
 		}
 		gSystem->ProcessEvents();
 
-		fwrite(data16[ibunch], 1, datasize[smid], fp);
+		fwrite(data16[ibunch], 1, 2048, fp);
 
 		data_length =  data16[ibunch][0] & 0xFF;
 		itmp = data16[ibunch][1] & 0xFF;
@@ -1321,7 +1330,7 @@ void FADC500run::Data16(int &sid, int &smid)
 				hostd3->Reset();
 				hostd4->Reset();
 
-				for (j=0; j<(hist_point / 4); j++)
+				for (int j=0; j<(hist_point / 4); j++)
 				{
 					tdc = (data16[ibunch][32+j*8+1] >> 4) & 0xF;
 					itmp = (data16[ibunch][32+j*8+3] >> 4) & 0xF;
@@ -1369,19 +1378,19 @@ void FADC500run::Data16(int &sid, int &smid)
 
 }
 
-void FADC500run::Data32(int &sid, int &smid)
+void FADC500run::Data32(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
-	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
+	for (int ibunch = 0; ibunch < 4; ibunch++)
 	{
 		printf("Mod[%d] bcount = %ld\n",sid,bcount);
-		for (int isize = 0; isize < datasize[smid]; isize++)
+		for (int isize = 0; isize < 4096; isize++)
 		{
-			data32[ibunch][isize] = data[ibunch*datasize[smid]+isize];
+			data32[ibunch][isize] = data[ibunch*4096+isize];
 		}
 		gSystem->ProcessEvents();
 
-		fwrite(data32[ibunch], 1, datasize[smid], fp);
+		fwrite(data32[ibunch], 1, 4096, fp);
 
 		data_length =  data32[ibunch][0] & 0xFF;
 		itmp = data32[ibunch][1] & 0xFF;
@@ -1560,7 +1569,7 @@ void FADC500run::Data32(int &sid, int &smid)
 				hostd3->Reset();
 				hostd4->Reset();
 
-				for (j=0; j<(hist_point / 4); j++)
+				for (int j=0; j<(hist_point / 4); j++)
 				{
 					tdc = (data32[ibunch][32+j*8+1] >> 4) & 0xF;
 					itmp = (data32[ibunch][32+j*8+3] >> 4) & 0xF;
@@ -1608,19 +1617,19 @@ void FADC500run::Data32(int &sid, int &smid)
 
 }
 
-void FADC500run::Data64(int &sid, int &smid)
+void FADC500run::Data64(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
-	for (int ibunch = 0; ibunch < 16384/datasize[smid]; ibunch++)
+	for (int ibunch = 0; ibunch < 2; ibunch++)
 	{
 		printf("Mod[%d] bcount = %ld\n",sid,bcount);
-		for (int isize = 0; isize < datasize[smid]; isize++)
+		for (int isize = 0; isize < 8192; isize++)
 		{
-			data64[ibunch][isize] = data[ibunch*datasize[smid]+isize];
+			data64[ibunch][isize] = data[ibunch*8192+isize];
 		}
 		gSystem->ProcessEvents();
 
-		fwrite(data64[ibunch], 1, datasize[smid], fp);
+		fwrite(data64[ibunch], 1, 8192, fp);
 
 		data_length =  data64[ibunch][0] & 0xFF;
 		itmp = data64[ibunch][1] & 0xFF;
@@ -1799,7 +1808,7 @@ void FADC500run::Data64(int &sid, int &smid)
 				hostd3->Reset();
 				hostd4->Reset();
 
-				for (j=0; j<(hist_point / 4); j++)
+				for (int j=0; j<(hist_point / 4); j++)
 				{
 					tdc = (data64[ibunch][32+j*8+1] >> 4) & 0xF;
 					itmp = (data64[ibunch][32+j*8+3] >> 4) & 0xF;
@@ -1848,10 +1857,10 @@ void FADC500run::Data64(int &sid, int &smid)
 
 }
 
-void FADC500run::Data128(int &sid, int &smid)
+void FADC500run::Data128(int &sid)
 {
-	fadc->FADC500IBSread_DATA(sid, datasize[smid]/1024, data128);
-	fwrite(data128, 1, datasize[smid], fp);
+	fadc->FADC500IBSread_DATA(sid, 16384/1024, data128);
+	fwrite(data128, 1, 16384, fp);
 	printf("Mod[%d] bcount = %ld\n",sid,bcount);
 
 	gSystem->ProcessEvents();
@@ -2033,7 +2042,7 @@ void FADC500run::Data128(int &sid, int &smid)
 			hostd3->Reset();
 			hostd4->Reset();
 
-			for (j=0; j<(hist_point / 4); j++)
+			for (int j=0; j<(hist_point / 4); j++)
 			{
 				tdc = (data128[32+j*8+1] >> 4) & 0xF;
 				itmp = (data128[32+j*8+3] >> 4) & 0xF;
@@ -2079,10 +2088,10 @@ void FADC500run::Data128(int &sid, int &smid)
 
 }
 
-void FADC500run::Data256(int &sid, int &smid)
+void FADC500run::Data256(int &sid)
 {
-	fadc->FADC500IBSread_DATA(sid, datasize[smid]/1024, data256);
-	fwrite(data256, 1, datasize[smid], fp);
+	fadc->FADC500IBSread_DATA(sid, 32768/1024, data256);
+	fwrite(data256, 1, 32768, fp);
 	printf("Mod[%d] bcount = %ld\n",sid,bcount);
 
 	gSystem->ProcessEvents();
@@ -2264,7 +2273,7 @@ void FADC500run::Data256(int &sid, int &smid)
 			hostd3->Reset();
 			hostd4->Reset();
 
-			for (j=0; j<(hist_point / 4); j++)
+			for (int j=0; j<(hist_point / 4); j++)
 			{
 				tdc = (data256[32+j*8+1] >> 4) & 0xF;
 				itmp = (data256[32+j*8+3] >> 4) & 0xF;
