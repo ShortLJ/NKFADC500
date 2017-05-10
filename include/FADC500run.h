@@ -3,7 +3,7 @@ NKFADC500 GUI system
 Made by Byul Moon.
 FADC500run.h header file
 Run NKFADC500 DAQ and save data.
-May. 1. 2017.
+May. 10. 2017.
 ***********************************************************/
 
 #ifndef NFADCrun_H
