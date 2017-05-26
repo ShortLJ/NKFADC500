@@ -62,7 +62,6 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 	adcflag = 1;
 	tdcflag = 1;
 	iEvent = 0;
-	nEvent = nEvent*nMod;
 
 	while (1)
 	{
@@ -135,9 +134,11 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 			gSystem->ProcessEvents();
 
 		}
+
+		iEvent = local_tnum;
 		gSystem->ProcessEvents();
 
-		if (iEvent >= nEvent)	break;
+		if (iEvent >= nEvent-1)	break;
 		gSystem->ProcessEvents();
 
 		if (flag == 0)	break;			
@@ -413,7 +414,6 @@ void FADC500run::Data1(int &sid)
 		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 		printf("-------------------------------------------------------------------------------------------------------\n");
 		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-		iEvent++;
 
 	}
 
@@ -654,7 +654,6 @@ void FADC500run::Data2(int &sid)
 		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 		printf("-------------------------------------------------------------------------------------------------------\n");
 		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-		iEvent++;
 
 	}
 
@@ -895,7 +894,6 @@ void FADC500run::Data4(int &sid)
 		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 		printf("-------------------------------------------------------------------------------------------------------\n");
 		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-		iEvent++;
 
 	}
 
@@ -1135,7 +1133,6 @@ void FADC500run::Data8(int &sid)
 		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 		printf("-------------------------------------------------------------------------------------------------------\n");
 		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-		iEvent++;
 
 	}
 
@@ -1375,7 +1372,6 @@ void FADC500run::Data16(int &sid)
 		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 		printf("-------------------------------------------------------------------------------------------------------\n");
 		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-		iEvent++;
 
 	}
 
@@ -1615,7 +1611,6 @@ void FADC500run::Data32(int &sid)
 		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 		printf("-------------------------------------------------------------------------------------------------------\n");
 		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-		iEvent++;
 
 	}
 
@@ -1856,7 +1851,6 @@ void FADC500run::Data64(int &sid)
 		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 		printf("-------------------------------------------------------------------------------------------------------\n");
 		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-		iEvent++;
 
 	}
 
@@ -2090,7 +2084,6 @@ void FADC500run::Data128(int &sid)
 	printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 	printf("-------------------------------------------------------------------------------------------------------\n");
 	fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-	iEvent++;
 
 
 
@@ -2322,7 +2315,6 @@ void FADC500run::Data256(int &sid)
 	printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 	printf("-------------------------------------------------------------------------------------------------------\n");
 	fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-	iEvent++;
 
 
 

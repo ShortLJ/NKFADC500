@@ -1396,7 +1396,7 @@ void FADC500gui::SetPol(int value)
 	}
 	if (value == 1)
 	{
-		fset.pol[module][channel] = 0;	
+		fset.pol[module][channel] = 1;	
 		cout << "***** Pulse Polarity : " << "Positive" << " *****" << endl;
 	}
 }
