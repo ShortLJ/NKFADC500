@@ -81,7 +81,7 @@ A. Parameters\n\
 	2. Pedestal Trigger Interval : input the time interval in ms scale for your work. 0 is for disable. If you use this fuction, the DAQ will intermittently put a trigger signal to get the pedestal.\n\
 	3. Number of Events : input the total number of event that you want. When the DAQ get events as many as you set, it will stop getting data.\n\
 	4. Trigger Delay : input the time delay of the trigger. The scale is in ns.\n\
-	5. Trigger Coincidence Width : input the coincidence width for your setting trigger. The scale is in ns. This is required only for AND type triggers.\n\
+	5. Trigger Coincidence Width : input the coincidence width for your setting trigger. The scale is in ns. From 8 to 32760. This is required only for AND type triggers.\n\
 	6. Pulse Count Trigger : activate this fuction if you want to trigger data using the pulse count.\n\
 	7. Pulse Width Trigger : activate this fuction if you want to trigger data using the pulse width.\n\
 	8. Peak Sum Trigger : activate this function if you want to trigger data using the area of the pulse peak.\n\
@@ -90,9 +90,9 @@ A. Parameters\n\
 	--------------------------Local Parameters---------------------------\n\
 	1. Recording Length : set the data length in time scale. The FADC digitize the pulse every 2 ns until the data length. Consistent for each module.\n\
 	2. Trigger Type : set the trigger type. Master trigger is using an external trigger. Consistent for each module.\n\
-	3. Coincidence Width : input the coincidence width for your work. Able to set for every channel.\n\
+	3. Coincidence Width : input the coincidence width for your work. The scale is in ns. From 8 to 32760. Able to set for every channel.\n\
 	4. ADC Threshold : input the threshold for ADC signals. 1 cbt ~ 0.5 mV. Able to set for every channel.\n\
-	5. TDC Threshold : input the threshold for TDC signals. Note that TDC signals are amplified 10 times compared to ADC signals. Able to set for every channel.\n\
+	5. TDC Threshold : input the threshold for TDC signals. 1 cbt ~ 0.5 mV for positive polarity and 1 cbt ~ 0.05 mV for negative polarity. Able to set for every channel.\n\
 	6. Pulse Count Threshold : input the threshold for the pulse count trigger. From 1 to 15. Able to set for every channel.\n\
 	7. Pulse Count Interval : input the time interval for the pulse count trigger. From 32 ns to 8160 ns. Able to set for every channel.\n\
 	8. Pulse Width Threshold : input the threshold for the pulse width trigger. From 2 ns to 1022 ns. Able to set for every channel.\n\
@@ -100,7 +100,7 @@ A. Parameters\n\
 	10. Zero Suppression : activate this function if you want to use zero suppression. Able to set for every channel.\n\
 	11. Pulse Polarity : set the polarity of the pulse signal. Able to set for every channel.\n\
 	12. ADC Offset : input the offset of ADC signals. 3000 is enough for negative pulses, 500 is enough for positive pulses. Able to set for every channel.\n\
-	13. ADC Delay : input the delay of ADC signals. Delay time is between the trigger gate and the ADC signal. Able to set for every channel.\n\
+	13. ADC Delay : input the delay of ADC signals. Delay time is between the trigger gate and the ADC signal. The scale is in ns. From 0 to 31992. Able to set for every channel.\n\
 	14. Peak Sum Width : input the threshold for the peak sum trigger. From 2 to 16382 ns. Able to set for every channel.\n\
 	15. ADC Mode : select the mode of ADCs. Able to set for every channel.\n\
 \n\
@@ -196,7 +196,7 @@ FADC500gui::FADC500gui()
 	fCompositeFrame1->AddFrame(fNMODULE, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
 	fNMODULE -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetNModule(const Char_t *)");
 
-	lPTRIGGER = new TGLabel(fCompositeFrame1, "Pedestal Trigger Interval");
+	lPTRIGGER = new TGLabel(fCompositeFrame1, "Pedestal Trigger Interval(ms)");
 	lPTRIGGER -> SetTextJustify(kTextLeft);
 	lPTRIGGER -> SetMargins(0, 0, 0, 0);
 	lPTRIGGER -> SetWrapLength(-1);
@@ -220,7 +220,7 @@ FADC500gui::FADC500gui()
     fCompositeFrame1->AddFrame(fNEVENT, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
     fNEVENT -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetNEvent(const Char_t *)");
 
-    lTRIGDELAY = new TGLabel(fCompositeFrame1, "Trigger Delay");
+    lTRIGDELAY = new TGLabel(fCompositeFrame1, "Trigger Delay(ns)");
     lTRIGDELAY -> SetTextJustify(kTextLeft);
     lTRIGDELAY -> SetMargins(0, 0, 0, 0);
     lTRIGDELAY -> SetWrapLength(-1);
@@ -232,14 +232,14 @@ FADC500gui::FADC500gui()
     fCompositeFrame1->AddFrame(fTRIGDELAY, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
     fTRIGDELAY -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetTrigDelay(const Char_t *)");
 
-    lTRIGCOINWIDTH = new TGLabel(fCompositeFrame1, "Trigger Coincidence Width");
+    lTRIGCOINWIDTH = new TGLabel(fCompositeFrame1, "Trigger Coincidence Width(ns)");
     lTRIGCOINWIDTH -> SetTextJustify(kTextLeft);
     lTRIGCOINWIDTH -> SetMargins(0, 0, 0, 0);
     lTRIGCOINWIDTH -> SetWrapLength(-1);
     fCompositeFrame1 -> AddFrame(lTRIGCOINWIDTH, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
     lTRIGCOINWIDTH -> MoveResize(20,190,170,20);
 
-    fTRIGCOINWIDTH = new TGNumberEntryField(fCompositeFrame1, 0, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 8, 32768);
+    fTRIGCOINWIDTH = new TGNumberEntryField(fCompositeFrame1, 0, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 8, 32760);
     fTRIGCOINWIDTH->MoveResize(200,190,100,20);
     fCompositeFrame1->AddFrame(fTRIGCOINWIDTH, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
     fTRIGCOINWIDTH -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetTrigCoinWidth(const Char_t *)");
@@ -437,14 +437,14 @@ FADC500gui::FADC500gui()
 			fChannelFrame[i][j] -> SetLayoutManager(new TGVerticalLayout(fChannelFrame[i][j]));
 			fChannelFrame[i][j] ->SetLayoutBroken(kTRUE);
 
-			lCOINWIDTH = new TGLabel(fChannelFrame[i][j], "Coincidence Width");
+			lCOINWIDTH = new TGLabel(fChannelFrame[i][j], "Coincidence Width(ns)");
 			lCOINWIDTH -> SetTextJustify(kTextLeft);
 			lCOINWIDTH -> SetMargins(0, 0, 0, 0);
 			lCOINWIDTH -> SetWrapLength(-1);
 			fChannelFrame[i][j] -> AddFrame(lCOINWIDTH, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
 			lCOINWIDTH -> MoveResize(20,10,170,20);
 
-			fCOINWIDTH[i][j] = new TGNumberEntryField(fChannelFrame[i][j], widgetID, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 8, 32768);
+			fCOINWIDTH[i][j] = new TGNumberEntryField(fChannelFrame[i][j], widgetID, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 8, 32760);
 			fCOINWIDTH[i][j]->MoveResize(200,10,100,20);
 			fChannelFrame[i][j]->AddFrame(fCOINWIDTH[i][j], new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
 			fCOINWIDTH[i][j] -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetCoinWidth(const Char_t *)");
@@ -468,7 +468,7 @@ FADC500gui::FADC500gui()
 			fChannelFrame[i][j] -> AddFrame(lTDCTHR, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
 			lTDCTHR -> MoveResize(20,70,170,20);
 
-			fTDCTHR[i][j] = new TGNumberEntryField(fChannelFrame[i][j], widgetID, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 0, 4096);
+			fTDCTHR[i][j] = new TGNumberEntryField(fChannelFrame[i][j], widgetID, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 0, 40960);
 			fTDCTHR[i][j]->MoveResize(200,70,100,20);
 			fChannelFrame[i][j]->AddFrame(fTDCTHR[i][j], new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
 			fTDCTHR[i][j] -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetTDCThr(const Char_t *)");
@@ -485,7 +485,7 @@ FADC500gui::FADC500gui()
 			fChannelFrame[i][j]->AddFrame(fPCT[i][j], new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
 			fPCT[i][j] -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetPCT(const Char_t *)");
 
-			lPCI = new TGLabel(fChannelFrame[i][j], "Pulse Count Interval");
+			lPCI = new TGLabel(fChannelFrame[i][j], "Pulse Count Interval(ns)");
 			lPCI -> SetTextJustify(kTextLeft);
 			lPCI -> SetMargins(0, 0, 0, 0);
 			lPCI -> SetWrapLength(-1);
@@ -497,7 +497,7 @@ FADC500gui::FADC500gui()
 			fChannelFrame[i][j]->AddFrame(fPCI[i][j], new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
 			fPCI[i][j] -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetPCI(const Char_t *)");
 
-			lPWT = new TGLabel(fChannelFrame[i][j], "Pulse Width Threshold");
+			lPWT = new TGLabel(fChannelFrame[i][j], "Pulse Width Threshold(ns)");
 			lPWT -> SetTextJustify(kTextLeft);
 			lPWT -> SetMargins(0, 0, 0, 0);
 			lPWT -> SetWrapLength(-1);
@@ -509,7 +509,7 @@ FADC500gui::FADC500gui()
 			fChannelFrame[i][j]->AddFrame(fPWT[i][j], new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
 			fPWT[i][j] -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetPWT(const Char_t *)");
 
-			lTRIGDEAD = new TGLabel(fChannelFrame[i][j], "Trigger Deadtime");
+			lTRIGDEAD = new TGLabel(fChannelFrame[i][j], "Trigger Deadtime(ns)");
 			lTRIGDEAD -> SetTextJustify(kTextLeft);
 			lTRIGDEAD -> SetMargins(0, 0, 0, 0);
 			lTRIGDEAD -> SetWrapLength(-1);
@@ -567,19 +567,19 @@ FADC500gui::FADC500gui()
 			fChannelFrame[i][j]->AddFrame(fOFFSET[i][j], new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
 			fOFFSET[i][j] -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetOffset(const Char_t *)");
 
-			lADELAY = new TGLabel(fChannelFrame[i][j], "ADC Delay");
+			lADELAY = new TGLabel(fChannelFrame[i][j], "ADC Delay(ns)");
 			lADELAY -> SetTextJustify(kTextLeft);
 			lADELAY -> SetMargins(0, 0, 0, 0);
 			lADELAY -> SetWrapLength(-1);
 			fChannelFrame[i][j] -> AddFrame(lADELAY, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
 			lADELAY -> MoveResize(20,310,170,20);
 
-			fADELAY[i][j] = new TGNumberEntryField(fChannelFrame[i][j], widgetID, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 0, 4095);
+			fADELAY[i][j] = new TGNumberEntryField(fChannelFrame[i][j], widgetID, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 0, 31992);
 			fADELAY[i][j]->MoveResize(200,310,100,20);
 			fChannelFrame[i][j]->AddFrame(fADELAY[i][j], new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
 			fADELAY[i][j] -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetADCDelay(const Char_t *)");
 
-			lPSUMWIDTH = new TGLabel(fChannelFrame[i][j], "Peak Sum Width");
+			lPSUMWIDTH = new TGLabel(fChannelFrame[i][j], "Peak Sum Width(ns)");
 			lPSUMWIDTH -> SetTextJustify(kTextLeft);
 			lPSUMWIDTH -> SetMargins(0, 0, 0, 0);
 			lPSUMWIDTH -> SetWrapLength(-1);
