@@ -431,7 +431,7 @@ void FADC500run::TakeResidual(const int &nMod)
 		rcount.push_back(fadc->FADC500IBSread_BCOUNT(sid[imod]));
 		printf("Residual memory for %d module : %d\n", imod+1, rcount[imod]);
 	}
-	printf("Start taking residula data\n");
+	printf("Start taking residual data\n");
 	gSystem->ProcessEvents();
 	for (int imod = 0; imod < nMod; imod++)
 	{
@@ -440,7 +440,7 @@ void FADC500run::TakeResidual(const int &nMod)
 			for (int ircount = 0; ircount < int(rcount[imod]/32); ircount++)
 			{
 				printf("Module %d residual memory : %d\n", sid[imod], rcount[imod]-ircount*32);
-				Data256(imod);
+				Data256(sid[imod]);
 				gSystem->ProcessEvents();
 			}
 		}	
@@ -468,7 +468,7 @@ void FADC500run::Data1(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 128; ibunch++)
 	{
-		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
+		if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 128; isize++)
 		{
 			data1[ibunch][isize] = data[ibunch*128+isize];
@@ -594,7 +594,7 @@ void FADC500run::Data2(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 64; ibunch++)
 	{
-		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
+		if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 256; isize++)
 		{
 			data2[ibunch][isize] = data[ibunch*256+isize];
@@ -720,7 +720,7 @@ void FADC500run::Data4(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 32; ibunch++)
 	{
-		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
+		if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 512; isize++)
 		{
 			data4[ibunch][isize] = data[ibunch*512+isize];
@@ -845,7 +845,7 @@ void FADC500run::Data8(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 16; ibunch++)
 	{
-		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
+		if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 1024; isize++)
 		{
 			data8[ibunch][isize] = data[ibunch*1024+isize];
@@ -970,7 +970,7 @@ void FADC500run::Data16(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 8; ibunch++)
 	{
-		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
+		if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 2048; isize++)
 		{
 			data16[ibunch][isize] = data[ibunch*2048+isize];
@@ -1095,7 +1095,7 @@ void FADC500run::Data32(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 4; ibunch++)
 	{
-		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
+		if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 4096; isize++)
 		{
 			data32[ibunch][isize] = data[ibunch*4096+isize];
@@ -1220,7 +1220,7 @@ void FADC500run::Data64(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 2; ibunch++)
 	{
-		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
+		if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 8192; isize++)
 		{
 			data64[ibunch][isize] = data[ibunch*8192+isize];
@@ -1344,7 +1344,7 @@ void FADC500run::Data128(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data128);
 	fwrite(data128, 1, 16384, fp);
-	if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
+	if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid,bcount);
 
 	gSystem->ProcessEvents();
 
@@ -1461,7 +1461,7 @@ void FADC500run::Data256(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 32768/1024, data256);
 	fwrite(data256, 1, 32768, fp);
-	if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
+	if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid,bcount);
 
 	gSystem->ProcessEvents();
 
