@@ -72,6 +72,7 @@ class FADC500run
 		int flag;
 		int adcflag;
 		int tdcflag;
+		int flush;
 		TCanvas* c1;
 		TCanvas* c2;
 
@@ -96,6 +97,9 @@ class FADC500run
 		void Data128(int &sid);
 		void Data256(int &sid);
 		void clearall();
+		void DrawADCInfo(int datasize, int ibunch);
+		void DrawTDCInfo(int datasize, int ibunch);
+		void TakeResidual(const int &nMod);
 };
 #endif
 

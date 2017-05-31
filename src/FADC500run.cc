@@ -146,6 +146,8 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 	}
 	gSystem->ProcessEvents();
 
+	if (flush == 1)	TakeResidual(nMod);
+
 	fclose(fp);
 	fclose(lfp);
 	printf("Data file has been saved.\n");
@@ -182,12 +184,291 @@ void FADC500run::clearall()
 	sid.clear();
 }
 
+void FADC500run::DrawADCInfo(int datasize, int ibunch)
+{
+	if (hoscd1 == 0)
+	{
+		hoscd1 = new TH1F("hoscd1", "Channel1", hist_point, 0, hist_range);
+		hoscd2 = new TH1F("hoscd2", "Channel2", hist_point, 0, hist_range);
+		hoscd3 = new TH1F("hoscd3", "Channel3", hist_point, 0, hist_range);
+		hoscd4 = new TH1F("hoscd4", "Channel4", hist_point, 0, hist_range);
+		c1->cd(1);
+		hoscd1->Draw();
+		c1->cd(2);
+		hoscd2->Draw();
+		c1->cd(3);
+		hoscd3->Draw();
+		c1->cd(4);
+		hoscd4->Draw();
+		gSystem->ProcessEvents();
+	}
+
+	else
+	{
+		hoscd1->Reset();
+		hoscd2->Reset();
+		hoscd3->Reset();
+		hoscd4->Reset();
+
+		for (int j=0; j<hist_point; j++)
+		{
+			if (datasize == 128)
+			{
+				adc = data1[ibunch][32+j*2] & 0xFF;
+				itmp = data1[ibunch][32+j*2+1] & 0x0F;
+				adc = adc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 256)
+			{
+				adc = data2[ibunch][32+j*2] & 0xFF;
+				itmp = data2[ibunch][32+j*2+1] & 0x0F;
+				adc = adc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 512)
+			{
+				adc = data4[ibunch][32+j*2] & 0xFF;
+				itmp = data4[ibunch][32+j*2+1] & 0x0F;
+				adc = adc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 1024)
+			{
+				adc = data8[ibunch][32+j*2] & 0xFF;
+				itmp = data8[ibunch][32+j*2+1] & 0x0F;
+				adc = adc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 2048)
+			{
+				adc = data16[ibunch][32+j*2] & 0xFF;
+				itmp = data16[ibunch][32+j*2+1] & 0x0F;
+				adc = adc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 4096)
+			{
+				adc = data32[ibunch][32+j*2] & 0xFF;
+				itmp = data32[ibunch][32+j*2+1] & 0x0F;
+				adc = adc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 8192)
+			{
+				adc = data64[ibunch][32+j*2] & 0xFF;
+				itmp = data64[ibunch][32+j*2+1] & 0x0F;
+				adc = adc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 16384)
+			{
+				adc = data128[32+j*2] & 0xFF;
+				itmp = data128[32+j*2+1] & 0x0F;
+				adc = adc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 32768)
+			{
+				adc = data256[32+j*2] & 0xFF;
+				itmp = data256[32+j*2+1] & 0x0F;
+				adc = adc + (unsigned int)(itmp << 8);
+			}
+
+
+			if (channel == 1)
+				hoscd1->Fill(j*2, adc);
+			else if (channel == 2)
+				hoscd2->Fill(j*2, adc);
+			else if (channel == 3)
+				hoscd3->Fill(j*2, adc);
+			else if (channel == 4)
+				hoscd4->Fill(j*2, adc);
+		}
+		c1->cd(1);
+		hoscd1->Draw();
+		hoscd1->Sumw2(kFALSE);
+		c1->cd(2);
+		hoscd2->Draw();
+		hoscd2->Sumw2(kFALSE);
+		c1->cd(3);
+		hoscd3->Draw();
+		hoscd3->Sumw2(kFALSE);
+		c1->cd(4);
+		hoscd4->Draw();
+		hoscd4->Sumw2(kFALSE);
+		c1->Modified();
+		c1->Update();
+		gSystem->ProcessEvents();
+	}
+} 
+
+void FADC500run::DrawTDCInfo(int datasize, int ibunch)
+{
+	if (hostd1 == 0)
+	{
+		hostd1 = new TH1F("hostd1", "Channel1", hist_point / 4, 0, hist_range);
+		hostd2 = new TH1F("hostd2", "Channel2", hist_point / 4, 0, hist_range);
+		hostd3 = new TH1F("hostd3", "Channel3", hist_point / 4, 0, hist_range);
+		hostd4 = new TH1F("hostd4", "Channel4", hist_point / 4, 0, hist_range);
+		c2->cd(1);
+		hostd1->Draw();
+		c2->cd(2);
+		hostd2->Draw();
+		c2->cd(3);
+		hostd3->Draw();
+		c2->cd(4);
+		hostd4->Draw();
+		gSystem->ProcessEvents();
+	}
+	else
+	{
+		hostd1->Reset();
+		hostd2->Reset();
+		hostd3->Reset();
+		hostd4->Reset();
+
+		for (int j=0; j<(hist_point / 4); j++)
+		{
+			if (datasize == 128)
+			{
+				tdc = (data1[ibunch][32+j*8+1] >> 4) & 0xF;
+				itmp = (data1[ibunch][32+j*8+3] >> 4) & 0xF;
+				tdc = tdc + (unsigned int)(itmp << 4);
+				itmp = (data1[ibunch][32+j*8+5] >> 4) & 0x3;
+				tdc = tdc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 256)
+			{
+				tdc = (data2[ibunch][32+j*8+1] >> 4) & 0xF;
+				itmp = (data2[ibunch][32+j*8+3] >> 4) & 0xF;
+				tdc = tdc + (unsigned int)(itmp << 4);
+				itmp = (data2[ibunch][32+j*8+5] >> 4) & 0x3;
+				tdc = tdc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 512)
+			{
+				tdc = (data4[ibunch][32+j*8+1] >> 4) & 0xF;
+				itmp = (data4[ibunch][32+j*8+3] >> 4) & 0xF;
+				tdc = tdc + (unsigned int)(itmp << 4);
+				itmp = (data4[ibunch][32+j*8+5] >> 4) & 0x3;
+				tdc = tdc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 1024)
+			{
+				tdc = (data8[ibunch][32+j*8+1] >> 4) & 0xF;
+				itmp = (data8[ibunch][32+j*8+3] >> 4) & 0xF;
+				tdc = tdc + (unsigned int)(itmp << 4);
+				itmp = (data8[ibunch][32+j*8+5] >> 4) & 0x3;
+				tdc = tdc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 2048)
+			{
+				tdc = (data16[ibunch][32+j*8+1] >> 4) & 0xF;
+				itmp = (data16[ibunch][32+j*8+3] >> 4) & 0xF;
+				tdc = tdc + (unsigned int)(itmp << 4);
+				itmp = (data16[ibunch][32+j*8+5] >> 4) & 0x3;
+				tdc = tdc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 4096)
+			{
+				tdc = (data32[ibunch][32+j*8+1] >> 4) & 0xF;
+				itmp = (data32[ibunch][32+j*8+3] >> 4) & 0xF;
+				tdc = tdc + (unsigned int)(itmp << 4);
+				itmp = (data32[ibunch][32+j*8+5] >> 4) & 0x3;
+				tdc = tdc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 8192)
+			{
+				tdc = (data64[ibunch][32+j*8+1] >> 4) & 0xF;
+				itmp = (data64[ibunch][32+j*8+3] >> 4) & 0xF;
+				tdc = tdc + (unsigned int)(itmp << 4);
+				itmp = (data64[ibunch][32+j*8+5] >> 4) & 0x3;
+				tdc = tdc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 16384)
+			{
+				tdc = (data128[32+j*8+1] >> 4) & 0xF;
+				itmp = (data128[32+j*8+3] >> 4) & 0xF;
+				tdc = tdc + (unsigned int)(itmp << 4);
+				itmp = (data128[32+j*8+5] >> 4) & 0x3;
+				tdc = tdc + (unsigned int)(itmp << 8);
+			}
+			if (datasize == 32768)
+			{
+				tdc = (data256[32+j*8+1] >> 4) & 0xF;
+				itmp = (data256[32+j*8+3] >> 4) & 0xF;
+				tdc = tdc + (unsigned int)(itmp << 4);
+				itmp = (data256[32+j*8+5] >> 4) & 0x3;
+				tdc = tdc + (unsigned int)(itmp << 8);
+			}
+
+			if (channel == 1)
+				hostd1->Fill(j*8, tdc);
+			else if (channel == 2)
+				hostd2->Fill(j*8, tdc);
+			else if (channel == 3)
+				hostd3->Fill(j*8, tdc);
+			else if (channel == 4)
+				hostd4->Fill(j*8, tdc);
+		}
+		tdc = hostd1->GetMinimum();
+		c2->cd(1);
+		hostd1->Draw();
+		hostd1->Sumw2(kFALSE);
+		c2->cd(2);
+		hostd2->Draw();
+		hostd2->Sumw2(kFALSE);
+		c2->cd(3);
+		hostd3->Draw();
+		hostd3->Sumw2(kFALSE);
+		c2->cd(4);
+		hostd4->Draw();
+		hostd4->Sumw2(kFALSE);
+		c2->Modified();
+		c2->Update();
+		gSystem->ProcessEvents();
+	}
+}
+
+void FADC500run::TakeResidual(const int &nMod)
+{
+	vector <int> rcount;
+	for (int imod = 0; imod < nMod; imod++)
+	{
+		rcount.push_back(fadc->FADC500IBSread_BCOUNT(sid[imod]));
+		printf("Residual memory for %d module : %d\n", imod+1, rcount[imod]);
+	}
+	printf("Start taking residula data\n");
+	gSystem->ProcessEvents();
+	for (int imod = 0; imod < nMod; imod++)
+	{
+		if (datasize[imod] == 32768)
+		{
+			for (int ircount = 0; ircount < int(rcount[imod]/32); ircount++)
+			{
+				printf("Module %d residual memory : %d\n", sid[imod], rcount[imod]-ircount*32);
+				Data256(imod);
+				gSystem->ProcessEvents();
+			}
+		}	
+		if (datasize[imod] != 32768)
+		{
+			for (int ircount = 0; ircount < int(rcount[imod]/16); ircount++)
+			{
+				printf("Module %d residual memory : %d\n", sid[imod], rcount[imod]-ircount*16);
+				if (datasize[imod] == 128)	Data1(sid[imod]);
+				if (datasize[imod] == 256)	Data2(sid[imod]);
+				if (datasize[imod] == 512)	Data4(sid[imod]);
+				if (datasize[imod] == 1024)	Data8(sid[imod]);
+				if (datasize[imod] == 2048)	Data16(sid[imod]);
+				if (datasize[imod] == 4096)	Data32(sid[imod]);
+				if (datasize[imod] == 8192)	Data64(sid[imod]);
+				if (datasize[imod] == 16384)	Data128(sid[imod]);
+				gSystem->ProcessEvents();
+			}
+		}
+	}
+}
+
 void FADC500run::Data1(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 128; ibunch++)
 	{
-		printf("Mod[%d] bcount = %ld\n",sid,bcount);
+		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 128; isize++)
 		{
 			data1[ibunch][isize] = data[ibunch*128+isize];
@@ -289,125 +570,11 @@ void FADC500run::Data1(int &sid)
 		hist_point = (data_length - 32)/2;
 		hist_range = hist_point * 2;
 		gSystem->ProcessEvents();
-		if (adcflag == 1)
-		{
-			if (hoscd1 == 0)
-			{
-				hoscd1 = new TH1F("hoscd1", "Channel1", hist_point, 0, hist_range);
-				hoscd2 = new TH1F("hoscd2", "Channel2", hist_point, 0, hist_range);
-				hoscd3 = new TH1F("hoscd3", "Channel3", hist_point, 0, hist_range);
-				hoscd4 = new TH1F("hoscd4", "Channel4", hist_point, 0, hist_range);
-				c1->cd(1);
-				hoscd1->Draw();
-				c1->cd(2);
-				hoscd2->Draw();
-				c1->cd(3);
-				hoscd3->Draw();
-				c1->cd(4);
-				hoscd4->Draw();
-				gSystem->ProcessEvents();
-			}
+		if (adcflag == 1)	DrawADCInfo(128, ibunch);
+		gSystem->ProcessEvents();
 
-			else
-			{
-				hoscd1->Reset();
-				hoscd2->Reset();
-				hoscd3->Reset();
-				hoscd4->Reset();
-
-				for (int j=0; j<hist_point; j++)
-				{
-					adc = data1[ibunch][32+j*2] & 0xFF;
-					itmp = data1[ibunch][32+j*2+1] & 0x0F;
-					adc = adc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hoscd1->Fill(j*2, adc);
-					else if (channel == 2)
-						hoscd2->Fill(j*2, adc);
-					else if (channel == 3)
-						hoscd3->Fill(j*2, adc);
-					else if (channel == 4)
-						hoscd4->Fill(j*2, adc);
-				}
-				c1->cd(1);
-				hoscd1->Draw();
-				hoscd1->Sumw2(kFALSE);
-				c1->cd(2);
-				hoscd2->Draw();
-				hoscd2->Sumw2(kFALSE);
-				c1->cd(3);
-				hoscd3->Draw();
-				hoscd3->Sumw2(kFALSE);
-				c1->cd(4);
-				hoscd4->Draw();
-				hoscd4->Sumw2(kFALSE);
-				c1->Modified();
-				c1->Update();
-				gSystem->ProcessEvents();
-			}
-		}
-
-		if (tdcflag == 1)
-		{
-			if (hostd1 == 0)
-			{
-				hostd1 = new TH1F("hostd1", "Channel1", hist_point / 4, 0, hist_range);
-				hostd2 = new TH1F("hostd2", "Channel2", hist_point / 4, 0, hist_range);
-				hostd3 = new TH1F("hostd3", "Channel3", hist_point / 4, 0, hist_range);
-				hostd4 = new TH1F("hostd4", "Channel4", hist_point / 4, 0, hist_range);
-				c2->cd(1);
-				hostd1->Draw();
-				c2->cd(2);
-				hostd2->Draw();
-				c2->cd(3);
-				hostd3->Draw();
-				c2->cd(4);
-				hostd4->Draw();
-				gSystem->ProcessEvents();
-			}
-			else
-			{
-				hostd1->Reset();
-				hostd2->Reset();
-				hostd3->Reset();
-				hostd4->Reset();
-
-				for (int j=0; j<(hist_point / 4); j++)
-				{
-					tdc = (data1[ibunch][32+j*8+1] >> 4) & 0xF;
-					itmp = (data1[ibunch][32+j*8+3] >> 4) & 0xF;
-					tdc = tdc + (unsigned int)(itmp << 4);
-					itmp = (data1[ibunch][32+j*8+5] >> 4) & 0x3;
-					tdc = tdc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hostd1->Fill(j*8, tdc);
-					else if (channel == 2)
-						hostd2->Fill(j*8, tdc);
-					else if (channel == 3)
-						hostd3->Fill(j*8, tdc);
-					else if (channel == 4)
-						hostd4->Fill(j*8, tdc);
-				}
-				tdc = hostd1->GetMinimum();
-				c2->cd(1);
-				hostd1->Draw();
-				hostd1->Sumw2(kFALSE);
-				c2->cd(2);
-				hostd2->Draw();
-				hostd2->Sumw2(kFALSE);
-				c2->cd(3);
-				hostd3->Draw();
-				hostd3->Sumw2(kFALSE);
-				c2->cd(4);
-				hostd4->Draw();
-				hostd4->Sumw2(kFALSE);
-				c2->Modified();
-				c2->Update();
-				gSystem->ProcessEvents();
-			}
-		}
+		if (tdcflag == 1)	DrawTDCInfo(128, ibunch);
+		gSystem->ProcessEvents();
 		printf("module ID = %d, channel ID = %d\n", mid, channel);
 		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
 		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
@@ -427,7 +594,7 @@ void FADC500run::Data2(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 64; ibunch++)
 	{
-		printf("Mod[%d] bcount = %ld\n",sid,bcount);
+		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 256; isize++)
 		{
 			data2[ibunch][isize] = data[ibunch*256+isize];
@@ -529,125 +696,11 @@ void FADC500run::Data2(int &sid)
 		hist_point = (data_length - 32)/2;
 		hist_range = hist_point * 2;
 		gSystem->ProcessEvents();
-		if (adcflag == 1)
-		{
-			if (hoscd1 == 0)
-			{
-				hoscd1 = new TH1F("hoscd1", "Channel1", hist_point, 0, hist_range);
-				hoscd2 = new TH1F("hoscd2", "Channel2", hist_point, 0, hist_range);
-				hoscd3 = new TH1F("hoscd3", "Channel3", hist_point, 0, hist_range);
-				hoscd4 = new TH1F("hoscd4", "Channel4", hist_point, 0, hist_range);
-				c1->cd(1);
-				hoscd1->Draw();
-				c1->cd(2);
-				hoscd2->Draw();
-				c1->cd(3);
-				hoscd3->Draw();
-				c1->cd(4);
-				hoscd4->Draw();
-				gSystem->ProcessEvents();
-			}
+		if (adcflag == 1)	DrawADCInfo(256, ibunch);
+		gSystem->ProcessEvents();
 
-			else
-			{
-				hoscd1->Reset();
-				hoscd2->Reset();
-				hoscd3->Reset();
-				hoscd4->Reset();
-
-				for (int j=0; j<hist_point; j++)
-				{
-					adc = data2[ibunch][32+j*2] & 0xFF;
-					itmp = data2[ibunch][32+j*2+1] & 0x0F;
-					adc = adc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hoscd1->Fill(j*2, adc);
-					else if (channel == 2)
-						hoscd2->Fill(j*2, adc);
-					else if (channel == 3)
-						hoscd3->Fill(j*2, adc);
-					else if (channel == 4)
-						hoscd4->Fill(j*2, adc);
-				}
-				c1->cd(1);
-				hoscd1->Draw();
-				hoscd1->Sumw2(kFALSE);
-				c1->cd(2);
-				hoscd2->Draw();
-				hoscd2->Sumw2(kFALSE);
-				c1->cd(3);
-				hoscd3->Draw();
-				hoscd3->Sumw2(kFALSE);
-				c1->cd(4);
-				hoscd4->Draw();
-				hoscd4->Sumw2(kFALSE);
-				c1->Modified();
-				c1->Update();
-				gSystem->ProcessEvents();
-			}
-		}
-
-		if (tdcflag == 1)
-		{
-			if (hostd1 == 0)
-			{
-				hostd1 = new TH1F("hostd1", "Channel1", hist_point / 4, 0, hist_range);
-				hostd2 = new TH1F("hostd2", "Channel2", hist_point / 4, 0, hist_range);
-				hostd3 = new TH1F("hostd3", "Channel3", hist_point / 4, 0, hist_range);
-				hostd4 = new TH1F("hostd4", "Channel4", hist_point / 4, 0, hist_range);
-				c2->cd(1);
-				hostd1->Draw();
-				c2->cd(2);
-				hostd2->Draw();
-				c2->cd(3);
-				hostd3->Draw();
-				c2->cd(4);
-				hostd4->Draw();
-				gSystem->ProcessEvents();
-			}
-			else
-			{
-				hostd1->Reset();
-				hostd2->Reset();
-				hostd3->Reset();
-				hostd4->Reset();
-
-				for (int j=0; j<(hist_point / 4); j++)
-				{
-					tdc = (data2[ibunch][32+j*8+1] >> 4) & 0xF;
-					itmp = (data2[ibunch][32+j*8+3] >> 4) & 0xF;
-					tdc = tdc + (unsigned int)(itmp << 4);
-					itmp = (data2[ibunch][32+j*8+5] >> 4) & 0x3;
-					tdc = tdc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hostd1->Fill(j*8, tdc);
-					else if (channel == 2)
-						hostd2->Fill(j*8, tdc);
-					else if (channel == 3)
-						hostd3->Fill(j*8, tdc);
-					else if (channel == 4)
-						hostd4->Fill(j*8, tdc);
-				}
-				tdc = hostd1->GetMinimum();
-				c2->cd(1);
-				hostd1->Draw();
-				hostd1->Sumw2(kFALSE);
-				c2->cd(2);
-				hostd2->Draw();
-				hostd2->Sumw2(kFALSE);
-				c2->cd(3);
-				hostd3->Draw();
-				hostd3->Sumw2(kFALSE);
-				c2->cd(4);
-				hostd4->Draw();
-				hostd4->Sumw2(kFALSE);
-				c2->Modified();
-				c2->Update();
-				gSystem->ProcessEvents();
-			}
-		}
+		if (tdcflag == 1)	DrawTDCInfo(256, ibunch);
+		gSystem->ProcessEvents();
 		printf("module ID = %d, channel ID = %d\n", mid, channel);
 		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
 		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
@@ -667,7 +720,7 @@ void FADC500run::Data4(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 32; ibunch++)
 	{
-		printf("Mod[%d] bcount = %ld\n",sid,bcount);
+		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 512; isize++)
 		{
 			data4[ibunch][isize] = data[ibunch*512+isize];
@@ -769,125 +822,11 @@ void FADC500run::Data4(int &sid)
 		hist_point = (data_length - 32)/2;
 		hist_range = hist_point * 2;
 		gSystem->ProcessEvents();
-		if (adcflag == 1)
-		{
-			if (hoscd1 == 0)
-			{
-				hoscd1 = new TH1F("hoscd1", "Channel1", hist_point, 0, hist_range);
-				hoscd2 = new TH1F("hoscd2", "Channel2", hist_point, 0, hist_range);
-				hoscd3 = new TH1F("hoscd3", "Channel3", hist_point, 0, hist_range);
-				hoscd4 = new TH1F("hoscd4", "Channel4", hist_point, 0, hist_range);
-				c1->cd(1);
-				hoscd1->Draw();
-				c1->cd(2);
-				hoscd2->Draw();
-				c1->cd(3);
-				hoscd3->Draw();
-				c1->cd(4);
-				hoscd4->Draw();
-				gSystem->ProcessEvents();
-			}
+		if (adcflag == 1)	DrawADCInfo(512, ibunch);
+		gSystem->ProcessEvents();
 
-			else
-			{
-				hoscd1->Reset();
-				hoscd2->Reset();
-				hoscd3->Reset();
-				hoscd4->Reset();
-
-				for (int j=0; j<hist_point; j++)
-				{
-					adc = data4[ibunch][32+j*2] & 0xFF;
-					itmp = data4[ibunch][32+j*2+1] & 0x0F;
-					adc = adc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hoscd1->Fill(j*2, adc);
-					else if (channel == 2)
-						hoscd2->Fill(j*2, adc);
-					else if (channel == 3)
-						hoscd3->Fill(j*2, adc);
-					else if (channel == 4)
-						hoscd4->Fill(j*2, adc);
-				}
-				c1->cd(1);
-				hoscd1->Draw();
-				hoscd1->Sumw2(kFALSE);
-				c1->cd(2);
-				hoscd2->Draw();
-				hoscd2->Sumw2(kFALSE);
-				c1->cd(3);
-				hoscd3->Draw();
-				hoscd3->Sumw2(kFALSE);
-				c1->cd(4);
-				hoscd4->Draw();
-				hoscd4->Sumw2(kFALSE);
-				c1->Modified();
-				c1->Update();
-				gSystem->ProcessEvents();
-			}
-		}
-
-		if (tdcflag == 1)
-		{
-			if (hostd1 == 0)
-			{
-				hostd1 = new TH1F("hostd1", "Channel1", hist_point / 4, 0, hist_range);
-				hostd2 = new TH1F("hostd2", "Channel2", hist_point / 4, 0, hist_range);
-				hostd3 = new TH1F("hostd3", "Channel3", hist_point / 4, 0, hist_range);
-				hostd4 = new TH1F("hostd4", "Channel4", hist_point / 4, 0, hist_range);
-				c2->cd(1);
-				hostd1->Draw();
-				c2->cd(2);
-				hostd2->Draw();
-				c2->cd(3);
-				hostd3->Draw();
-				c2->cd(4);
-				hostd4->Draw();
-				gSystem->ProcessEvents();
-			}
-			else
-			{
-				hostd1->Reset();
-				hostd2->Reset();
-				hostd3->Reset();
-				hostd4->Reset();
-
-				for (int j=0; j<(hist_point / 4); j++)
-				{
-					tdc = (data4[ibunch][32+j*8+1] >> 4) & 0xF;
-					itmp = (data4[ibunch][32+j*8+3] >> 4) & 0xF;
-					tdc = tdc + (unsigned int)(itmp << 4);
-					itmp = (data4[ibunch][32+j*8+5] >> 4) & 0x3;
-					tdc = tdc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hostd1->Fill(j*8, tdc);
-					else if (channel == 2)
-						hostd2->Fill(j*8, tdc);
-					else if (channel == 3)
-						hostd3->Fill(j*8, tdc);
-					else if (channel == 4)
-						hostd4->Fill(j*8, tdc);
-				}
-				tdc = hostd1->GetMinimum();
-				c2->cd(1);
-				hostd1->Draw();
-				hostd1->Sumw2(kFALSE);
-				c2->cd(2);
-				hostd2->Draw();
-				hostd2->Sumw2(kFALSE);
-				c2->cd(3);
-				hostd3->Draw();
-				hostd3->Sumw2(kFALSE);
-				c2->cd(4);
-				hostd4->Draw();
-				hostd4->Sumw2(kFALSE);
-				c2->Modified();
-				c2->Update();
-				gSystem->ProcessEvents();
-			}
-		}
+		if (tdcflag == 1)	DrawTDCInfo(512, ibunch);
+		gSystem->ProcessEvents();
 		printf("module ID = %d, channel ID = %d\n", mid, channel);
 		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
 		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
@@ -906,7 +845,7 @@ void FADC500run::Data8(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 16; ibunch++)
 	{
-		printf("Mod[%d] bcount = %ld\n",sid,bcount);
+		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 1024; isize++)
 		{
 			data8[ibunch][isize] = data[ibunch*1024+isize];
@@ -1008,125 +947,11 @@ void FADC500run::Data8(int &sid)
 		hist_point = (data_length - 32)/2;
 		hist_range = hist_point * 2;
 		gSystem->ProcessEvents();
-		if (adcflag == 1)
-		{
-			if (hoscd1 == 0)
-			{
-				hoscd1 = new TH1F("hoscd1", "Channel1", hist_point, 0, hist_range);
-				hoscd2 = new TH1F("hoscd2", "Channel2", hist_point, 0, hist_range);
-				hoscd3 = new TH1F("hoscd3", "Channel3", hist_point, 0, hist_range);
-				hoscd4 = new TH1F("hoscd4", "Channel4", hist_point, 0, hist_range);
-				c1->cd(1);
-				hoscd1->Draw();
-				c1->cd(2);
-				hoscd2->Draw();
-				c1->cd(3);
-				hoscd3->Draw();
-				c1->cd(4);
-				hoscd4->Draw();
-				gSystem->ProcessEvents();
-			}
+		if (adcflag == 1)	DrawADCInfo(1024, ibunch);
+		gSystem->ProcessEvents();
 
-			else
-			{
-				hoscd1->Reset();
-				hoscd2->Reset();
-				hoscd3->Reset();
-				hoscd4->Reset();
-
-				for (int j=0; j<hist_point; j++)
-				{
-					adc = data8[ibunch][32+j*2] & 0xFF;
-					itmp = data8[ibunch][32+j*2+1] & 0x0F;
-					adc = adc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hoscd1->Fill(j*2, adc);
-					else if (channel == 2)
-						hoscd2->Fill(j*2, adc);
-					else if (channel == 3)
-						hoscd3->Fill(j*2, adc);
-					else if (channel == 4)
-						hoscd4->Fill(j*2, adc);
-				}
-				c1->cd(1);
-				hoscd1->Draw();
-				hoscd1->Sumw2(kFALSE);
-				c1->cd(2);
-				hoscd2->Draw();
-				hoscd2->Sumw2(kFALSE);
-				c1->cd(3);
-				hoscd3->Draw();
-				hoscd3->Sumw2(kFALSE);
-				c1->cd(4);
-				hoscd4->Draw();
-				hoscd4->Sumw2(kFALSE);
-				c1->Modified();
-				c1->Update();
-				gSystem->ProcessEvents();
-			}
-		}
-
-		if (tdcflag == 1)
-		{
-			if (hostd1 == 0)
-			{
-				hostd1 = new TH1F("hostd1", "Channel1", hist_point / 4, 0, hist_range);
-				hostd2 = new TH1F("hostd2", "Channel2", hist_point / 4, 0, hist_range);
-				hostd3 = new TH1F("hostd3", "Channel3", hist_point / 4, 0, hist_range);
-				hostd4 = new TH1F("hostd4", "Channel4", hist_point / 4, 0, hist_range);
-				c2->cd(1);
-				hostd1->Draw();
-				c2->cd(2);
-				hostd2->Draw();
-				c2->cd(3);
-				hostd3->Draw();
-				c2->cd(4);
-				hostd4->Draw();
-				gSystem->ProcessEvents();
-			}
-			else
-			{
-				hostd1->Reset();
-				hostd2->Reset();
-				hostd3->Reset();
-				hostd4->Reset();
-
-				for (int j=0; j<(hist_point / 4); j++)
-				{
-					tdc = (data8[ibunch][32+j*8+1] >> 4) & 0xF;
-					itmp = (data8[ibunch][32+j*8+3] >> 4) & 0xF;
-					tdc = tdc + (unsigned int)(itmp << 4);
-					itmp = (data8[ibunch][32+j*8+5] >> 4) & 0x3;
-					tdc = tdc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hostd1->Fill(j*8, tdc);
-					else if (channel == 2)
-						hostd2->Fill(j*8, tdc);
-					else if (channel == 3)
-						hostd3->Fill(j*8, tdc);
-					else if (channel == 4)
-						hostd4->Fill(j*8, tdc);
-				}
-				tdc = hostd1->GetMinimum();
-				c2->cd(1);
-				hostd1->Draw();
-				hostd1->Sumw2(kFALSE);
-				c2->cd(2);
-				hostd2->Draw();
-				hostd2->Sumw2(kFALSE);
-				c2->cd(3);
-				hostd3->Draw();
-				hostd3->Sumw2(kFALSE);
-				c2->cd(4);
-				hostd4->Draw();
-				hostd4->Sumw2(kFALSE);
-				c2->Modified();
-				c2->Update();
-				gSystem->ProcessEvents();
-			}
-		}
+		if (tdcflag == 1)	DrawTDCInfo(1024, ibunch);
+		gSystem->ProcessEvents();
 		printf("module ID = %d, channel ID = %d\n", mid, channel);
 		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
 		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
@@ -1145,7 +970,7 @@ void FADC500run::Data16(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 8; ibunch++)
 	{
-		printf("Mod[%d] bcount = %ld\n",sid,bcount);
+		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 2048; isize++)
 		{
 			data16[ibunch][isize] = data[ibunch*2048+isize];
@@ -1247,125 +1072,11 @@ void FADC500run::Data16(int &sid)
 		hist_point = (data_length - 32)/2;
 		hist_range = hist_point * 2;
 		gSystem->ProcessEvents();
-		if (adcflag == 1)
-		{
-			if (hoscd1 == 0)
-			{
-				hoscd1 = new TH1F("hoscd1", "Channel1", hist_point, 0, hist_range);
-				hoscd2 = new TH1F("hoscd2", "Channel2", hist_point, 0, hist_range);
-				hoscd3 = new TH1F("hoscd3", "Channel3", hist_point, 0, hist_range);
-				hoscd4 = new TH1F("hoscd4", "Channel4", hist_point, 0, hist_range);
-				c1->cd(1);
-				hoscd1->Draw();
-				c1->cd(2);
-				hoscd2->Draw();
-				c1->cd(3);
-				hoscd3->Draw();
-				c1->cd(4);
-				hoscd4->Draw();
-				gSystem->ProcessEvents();
-			}
+		if (adcflag == 1)	DrawADCInfo(2048, ibunch);
+		gSystem->ProcessEvents();
 
-			else
-			{
-				hoscd1->Reset();
-				hoscd2->Reset();
-				hoscd3->Reset();
-				hoscd4->Reset();
-
-				for (int j=0; j<hist_point; j++)
-				{
-					adc = data16[ibunch][32+j*2] & 0xFF;
-					itmp = data16[ibunch][32+j*2+1] & 0x0F;
-					adc = adc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hoscd1->Fill(j*2, adc);
-					else if (channel == 2)
-						hoscd2->Fill(j*2, adc);
-					else if (channel == 3)
-						hoscd3->Fill(j*2, adc);
-					else if (channel == 4)
-						hoscd4->Fill(j*2, adc);
-				}
-				c1->cd(1);
-				hoscd1->Draw();
-				hoscd1->Sumw2(kFALSE);
-				c1->cd(2);
-				hoscd2->Draw();
-				hoscd2->Sumw2(kFALSE);
-				c1->cd(3);
-				hoscd3->Draw();
-				hoscd3->Sumw2(kFALSE);
-				c1->cd(4);
-				hoscd4->Draw();
-				hoscd4->Sumw2(kFALSE);
-				c1->Modified();
-				c1->Update();
-				gSystem->ProcessEvents();
-			}
-		}
-
-		if (tdcflag == 1)
-		{
-			if (hostd1 == 0)
-			{
-				hostd1 = new TH1F("hostd1", "Channel1", hist_point / 4, 0, hist_range);
-				hostd2 = new TH1F("hostd2", "Channel2", hist_point / 4, 0, hist_range);
-				hostd3 = new TH1F("hostd3", "Channel3", hist_point / 4, 0, hist_range);
-				hostd4 = new TH1F("hostd4", "Channel4", hist_point / 4, 0, hist_range);
-				c2->cd(1);
-				hostd1->Draw();
-				c2->cd(2);
-				hostd2->Draw();
-				c2->cd(3);
-				hostd3->Draw();
-				c2->cd(4);
-				hostd4->Draw();
-				gSystem->ProcessEvents();
-			}
-			else
-			{
-				hostd1->Reset();
-				hostd2->Reset();
-				hostd3->Reset();
-				hostd4->Reset();
-
-				for (int j=0; j<(hist_point / 4); j++)
-				{
-					tdc = (data16[ibunch][32+j*8+1] >> 4) & 0xF;
-					itmp = (data16[ibunch][32+j*8+3] >> 4) & 0xF;
-					tdc = tdc + (unsigned int)(itmp << 4);
-					itmp = (data16[ibunch][32+j*8+5] >> 4) & 0x3;
-					tdc = tdc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hostd1->Fill(j*8, tdc);
-					else if (channel == 2)
-						hostd2->Fill(j*8, tdc);
-					else if (channel == 3)
-						hostd3->Fill(j*8, tdc);
-					else if (channel == 4)
-						hostd4->Fill(j*8, tdc);
-				}
-				tdc = hostd1->GetMinimum();
-				c2->cd(1);
-				hostd1->Draw();
-				hostd1->Sumw2(kFALSE);
-				c2->cd(2);
-				hostd2->Draw();
-				hostd2->Sumw2(kFALSE);
-				c2->cd(3);
-				hostd3->Draw();
-				hostd3->Sumw2(kFALSE);
-				c2->cd(4);
-				hostd4->Draw();
-				hostd4->Sumw2(kFALSE);
-				c2->Modified();
-				c2->Update();
-				gSystem->ProcessEvents();
-			}
-		}
+		if (tdcflag == 1)	DrawTDCInfo(2048, ibunch);
+		gSystem->ProcessEvents();
 		printf("module ID = %d, channel ID = %d\n", mid, channel);
 		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
 		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
@@ -1384,7 +1095,7 @@ void FADC500run::Data32(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 4; ibunch++)
 	{
-		printf("Mod[%d] bcount = %ld\n",sid,bcount);
+		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 4096; isize++)
 		{
 			data32[ibunch][isize] = data[ibunch*4096+isize];
@@ -1486,125 +1197,11 @@ void FADC500run::Data32(int &sid)
 		hist_point = (data_length - 32)/2;
 		hist_range = hist_point * 2;
 		gSystem->ProcessEvents();
-		if (adcflag == 1)
-		{
-			if (hoscd1 == 0)
-			{
-				hoscd1 = new TH1F("hoscd1", "Channel1", hist_point, 0, hist_range);
-				hoscd2 = new TH1F("hoscd2", "Channel2", hist_point, 0, hist_range);
-				hoscd3 = new TH1F("hoscd3", "Channel3", hist_point, 0, hist_range);
-				hoscd4 = new TH1F("hoscd4", "Channel4", hist_point, 0, hist_range);
-				c1->cd(1);
-				hoscd1->Draw();
-				c1->cd(2);
-				hoscd2->Draw();
-				c1->cd(3);
-				hoscd3->Draw();
-				c1->cd(4);
-				hoscd4->Draw();
-				gSystem->ProcessEvents();
-			}
+		if (adcflag == 1)	DrawADCInfo(4096, ibunch);
+		gSystem->ProcessEvents();
 
-			else
-			{
-				hoscd1->Reset();
-				hoscd2->Reset();
-				hoscd3->Reset();
-				hoscd4->Reset();
-
-				for (int j=0; j<hist_point; j++)
-				{
-					adc = data32[ibunch][32+j*2] & 0xFF;
-					itmp = data32[ibunch][32+j*2+1] & 0x0F;
-					adc = adc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hoscd1->Fill(j*2, adc);
-					else if (channel == 2)
-						hoscd2->Fill(j*2, adc);
-					else if (channel == 3)
-						hoscd3->Fill(j*2, adc);
-					else if (channel == 4)
-						hoscd4->Fill(j*2, adc);
-				}
-				c1->cd(1);
-				hoscd1->Draw();
-				hoscd1->Sumw2(kFALSE);
-				c1->cd(2);
-				hoscd2->Draw();
-				hoscd2->Sumw2(kFALSE);
-				c1->cd(3);
-				hoscd3->Draw();
-				hoscd3->Sumw2(kFALSE);
-				c1->cd(4);
-				hoscd4->Draw();
-				hoscd4->Sumw2(kFALSE);
-				c1->Modified();
-				c1->Update();
-				gSystem->ProcessEvents();
-			}
-		}
-
-		if (tdcflag == 1)
-		{
-			if (hostd1 == 0)
-			{
-				hostd1 = new TH1F("hostd1", "Channel1", hist_point / 4, 0, hist_range);
-				hostd2 = new TH1F("hostd2", "Channel2", hist_point / 4, 0, hist_range);
-				hostd3 = new TH1F("hostd3", "Channel3", hist_point / 4, 0, hist_range);
-				hostd4 = new TH1F("hostd4", "Channel4", hist_point / 4, 0, hist_range);
-				c2->cd(1);
-				hostd1->Draw();
-				c2->cd(2);
-				hostd2->Draw();
-				c2->cd(3);
-				hostd3->Draw();
-				c2->cd(4);
-				hostd4->Draw();
-				gSystem->ProcessEvents();
-			}
-			else
-			{
-				hostd1->Reset();
-				hostd2->Reset();
-				hostd3->Reset();
-				hostd4->Reset();
-
-				for (int j=0; j<(hist_point / 4); j++)
-				{
-					tdc = (data32[ibunch][32+j*8+1] >> 4) & 0xF;
-					itmp = (data32[ibunch][32+j*8+3] >> 4) & 0xF;
-					tdc = tdc + (unsigned int)(itmp << 4);
-					itmp = (data32[ibunch][32+j*8+5] >> 4) & 0x3;
-					tdc = tdc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hostd1->Fill(j*8, tdc);
-					else if (channel == 2)
-						hostd2->Fill(j*8, tdc);
-					else if (channel == 3)
-						hostd3->Fill(j*8, tdc);
-					else if (channel == 4)
-						hostd4->Fill(j*8, tdc);
-				}
-				tdc = hostd1->GetMinimum();
-				c2->cd(1);
-				hostd1->Draw();
-				hostd1->Sumw2(kFALSE);
-				c2->cd(2);
-				hostd2->Draw();
-				hostd2->Sumw2(kFALSE);
-				c2->cd(3);
-				hostd3->Draw();
-				hostd3->Sumw2(kFALSE);
-				c2->cd(4);
-				hostd4->Draw();
-				hostd4->Sumw2(kFALSE);
-				c2->Modified();
-				c2->Update();
-				gSystem->ProcessEvents();
-			}
-		}
+		if (tdcflag == 1)	DrawTDCInfo(4096, ibunch);
+		gSystem->ProcessEvents();
 		printf("module ID = %d, channel ID = %d\n", mid, channel);
 		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
 		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
@@ -1623,7 +1220,7 @@ void FADC500run::Data64(int &sid)
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data); //the minimum bcount is 16 kB!!
 	for (int ibunch = 0; ibunch < 2; ibunch++)
 	{
-		printf("Mod[%d] bcount = %ld\n",sid,bcount);
+		if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
 		for (int isize = 0; isize < 8192; isize++)
 		{
 			data64[ibunch][isize] = data[ibunch*8192+isize];
@@ -1725,126 +1322,11 @@ void FADC500run::Data64(int &sid)
 		hist_point = (data_length - 32)/2;
 		hist_range = hist_point * 2;
 		gSystem->ProcessEvents();
-		if (adcflag == 1)
-		{
-			if (hoscd1 == 0)
-			{
-				hoscd1 = new TH1F("hoscd1", "Channel1", hist_point, 0, hist_range);
-				hoscd2 = new TH1F("hoscd2", "Channel2", hist_point, 0, hist_range);
-				hoscd3 = new TH1F("hoscd3", "Channel3", hist_point, 0, hist_range);
-				hoscd4 = new TH1F("hoscd4", "Channel4", hist_point, 0, hist_range);
-				c1->cd(1);
-				hoscd1->Draw();
-				c1->cd(2);
-				hoscd2->Draw();
-				c1->cd(3);
-				hoscd3->Draw();
-				c1->cd(4);
-				hoscd4->Draw();
-				gSystem->ProcessEvents();
-			}
+		if (adcflag == 1)	DrawADCInfo(8192, ibunch);
+		gSystem->ProcessEvents();
 
-			else
-			{
-				hoscd1->Reset();
-				hoscd2->Reset();
-				hoscd3->Reset();
-				hoscd4->Reset();
-
-				for (int j=0; j<hist_point; j++)
-				{
-					adc = data64[ibunch][32+j*2] & 0xFF;
-					itmp = data64[ibunch][32+j*2+1] & 0x0F;
-					adc = adc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hoscd1->Fill(j*2, adc);
-					else if (channel == 2)
-						hoscd2->Fill(j*2, adc);
-					else if (channel == 3)
-						hoscd3->Fill(j*2, adc);
-					else if (channel == 4)
-						hoscd4->Fill(j*2, adc);
-				}
-				c1->cd(1);
-				hoscd1->Draw();
-				hoscd1->Sumw2(kFALSE);
-				c1->cd(2);
-				hoscd2->Draw();
-				hoscd2->Sumw2(kFALSE);
-				c1->cd(3);
-				hoscd3->Draw();
-				hoscd3->Sumw2(kFALSE);
-				c1->cd(4);
-				hoscd4->Draw();
-				hoscd4->Sumw2(kFALSE);
-				c1->Modified();
-				c1->Update();
-				gSystem->ProcessEvents();
-			}
-		}
-
-		if (tdcflag == 1)
-		{
-			if (hostd1 == 0)
-			{
-				hostd1 = new TH1F("hostd1", "Channel1", hist_point / 4, 0, hist_range);
-				hostd2 = new TH1F("hostd2", "Channel2", hist_point / 4, 0, hist_range);
-				hostd3 = new TH1F("hostd3", "Channel3", hist_point / 4, 0, hist_range);
-				hostd4 = new TH1F("hostd4", "Channel4", hist_point / 4, 0, hist_range);
-				c2->cd(1);
-				hostd1->Draw();
-				c2->cd(2);
-				hostd2->Draw();
-				c2->cd(3);
-				hostd3->Draw();
-				c2->cd(4);
-				hostd4->Draw();
-				gSystem->ProcessEvents();
-			}
-			else
-			{
-				hostd1->Reset();
-				hostd2->Reset();
-				hostd3->Reset();
-				hostd4->Reset();
-
-				for (int j=0; j<(hist_point / 4); j++)
-				{
-					tdc = (data64[ibunch][32+j*8+1] >> 4) & 0xF;
-					itmp = (data64[ibunch][32+j*8+3] >> 4) & 0xF;
-					tdc = tdc + (unsigned int)(itmp << 4);
-					itmp = (data64[ibunch][32+j*8+5] >> 4) & 0x3;
-					tdc = tdc + (unsigned int)(itmp << 8);
-
-					if (channel == 1)
-						hostd1->Fill(j*8, tdc);
-					else if (channel == 2)
-						hostd2->Fill(j*8, tdc);
-					else if (channel == 3)
-						hostd3->Fill(j*8, tdc);
-					else if (channel == 4)
-						hostd4->Fill(j*8, tdc);
-				}
-				tdc = hostd1->GetMinimum();
-				c2->cd(1);
-				hostd1->Draw();
-				hostd1->Sumw2(kFALSE);
-				c2->cd(2);
-				hostd2->Draw();
-				hostd2->Sumw2(kFALSE);
-				c2->cd(3);
-				hostd3->Draw();
-				hostd3->Sumw2(kFALSE);
-				c2->cd(4);
-				hostd4->Draw();
-				hostd4->Sumw2(kFALSE);
-				c2->Modified();
-				c2->Update();
-				gSystem->ProcessEvents();
-			}
-		}
-
+		if (tdcflag == 1)	DrawTDCInfo(8192, ibunch);
+		gSystem->ProcessEvents();
 		printf("module ID = %d, channel ID = %d\n", mid, channel);
 		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
 		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
@@ -1862,7 +1344,7 @@ void FADC500run::Data128(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 16384/1024, data128);
 	fwrite(data128, 1, 16384, fp);
-	printf("Mod[%d] bcount = %ld\n",sid,bcount);
+	if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
 
 	gSystem->ProcessEvents();
 
@@ -1959,125 +1441,11 @@ void FADC500run::Data128(int &sid)
 	hist_point = (data_length - 32)/2;
 	hist_range = hist_point * 2;
 	gSystem->ProcessEvents();
-	if (adcflag == 1)
-	{
-		if (hoscd1 == 0)
-		{
-			hoscd1 = new TH1F("hoscd1", "Channel1", hist_point, 0, hist_range);
-			hoscd2 = new TH1F("hoscd2", "Channel2", hist_point, 0, hist_range);
-			hoscd3 = new TH1F("hoscd3", "Channel3", hist_point, 0, hist_range);
-			hoscd4 = new TH1F("hoscd4", "Channel4", hist_point, 0, hist_range);
-			c1->cd(1);
-			hoscd1->Draw();
-			c1->cd(2);
-			hoscd2->Draw();
-			c1->cd(3);
-			hoscd3->Draw();
-			c1->cd(4);
-			hoscd4->Draw();
-			gSystem->ProcessEvents();
-		}
+	if (adcflag == 1)	DrawADCInfo(16384, 0);
+	gSystem->ProcessEvents();
 
-		else
-		{
-			hoscd1->Reset();
-			hoscd2->Reset();
-			hoscd3->Reset();
-			hoscd4->Reset();
-
-			for (int j=0; j<hist_point; j++)
-			{
-				adc = data128[32+j*2] & 0xFF;
-				itmp = data128[32+j*2+1] & 0x0F;
-				adc = adc + (unsigned int)(itmp << 8);
-
-				if (channel == 1)
-					hoscd1->Fill(j*2, adc);
-				else if (channel == 2)
-					hoscd2->Fill(j*2, adc);
-				else if (channel == 3)
-					hoscd3->Fill(j*2, adc);
-				else if (channel == 4)
-					hoscd4->Fill(j*2, adc);
-			}
-			c1->cd(1);
-			hoscd1->Draw();
-			hoscd1->Sumw2(kFALSE);
-			c1->cd(2);
-			hoscd2->Draw();
-			hoscd2->Sumw2(kFALSE);
-			c1->cd(3);
-			hoscd3->Draw();
-			hoscd3->Sumw2(kFALSE);
-			c1->cd(4);
-			hoscd4->Draw();
-			hoscd4->Sumw2(kFALSE);
-			c1->Modified();
-			c1->Update();
-			gSystem->ProcessEvents();
-		}
-	}
-
-	if (tdcflag == 1)
-	{
-		if (hostd1 == 0)
-		{
-			hostd1 = new TH1F("hostd1", "Channel1", hist_point / 4, 0, hist_range);
-			hostd2 = new TH1F("hostd2", "Channel2", hist_point / 4, 0, hist_range);
-			hostd3 = new TH1F("hostd3", "Channel3", hist_point / 4, 0, hist_range);
-			hostd4 = new TH1F("hostd4", "Channel4", hist_point / 4, 0, hist_range);
-			c2->cd(1);
-			hostd1->Draw();
-			c2->cd(2);
-			hostd2->Draw();
-			c2->cd(3);
-			hostd3->Draw();
-			c2->cd(4);
-			hostd4->Draw();
-			gSystem->ProcessEvents();
-		}
-		else
-		{
-			hostd1->Reset();
-			hostd2->Reset();
-			hostd3->Reset();
-			hostd4->Reset();
-
-			for (int j=0; j<(hist_point / 4); j++)
-			{
-				tdc = (data128[32+j*8+1] >> 4) & 0xF;
-				itmp = (data128[32+j*8+3] >> 4) & 0xF;
-				tdc = tdc + (unsigned int)(itmp << 4);
-				itmp = (data128[32+j*8+5] >> 4) & 0x3;
-				tdc = tdc + (unsigned int)(itmp << 8);
-
-				if (channel == 1)
-					hostd1->Fill(j*8, tdc);
-				else if (channel == 2)
-					hostd2->Fill(j*8, tdc);
-				else if (channel == 3)
-					hostd3->Fill(j*8, tdc);
-				else if (channel == 4)
-					hostd4->Fill(j*8, tdc);
-			}
-			tdc = hostd1->GetMinimum();
-			c2->cd(1);
-			hostd1->Draw();
-			hostd1->Sumw2(kFALSE);
-			c2->cd(2);
-			hostd2->Draw();
-			hostd2->Sumw2(kFALSE);
-			c2->cd(3);
-			hostd3->Draw();
-			hostd3->Sumw2(kFALSE);
-			c2->cd(4);
-			hostd4->Draw();
-			hostd4->Sumw2(kFALSE);
-			c2->Modified();
-			c2->Update();
-			gSystem->ProcessEvents();
-		}
-	}
+	if (tdcflag == 1)	DrawTDCInfo(16384, 0);
+	gSystem->ProcessEvents();
 	printf("module ID = %d, channel ID = %d\n", mid, channel);
 	printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
 	printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
@@ -2093,7 +1461,7 @@ void FADC500run::Data256(int &sid)
 {
 	fadc->FADC500IBSread_DATA(sid, 32768/1024, data256);
 	fwrite(data256, 1, 32768, fp);
-	printf("Mod[%d] bcount = %ld\n",sid,bcount);
+	if (flag == 1) printf("Moddule %d DRAM Memory = %ld\n",sid,bcount);
 
 	gSystem->ProcessEvents();
 
@@ -2190,132 +1558,15 @@ void FADC500run::Data256(int &sid)
 	hist_point = (data_length - 32)/2;
 	hist_range = hist_point * 2;
 	gSystem->ProcessEvents();
-	if (adcflag == 1)
-	{
-		if (hoscd1 == 0)
-		{
-			hoscd1 = new TH1F("hoscd1", "Channel1", hist_point, 0, hist_range);
-			hoscd2 = new TH1F("hoscd2", "Channel2", hist_point, 0, hist_range);
-			hoscd3 = new TH1F("hoscd3", "Channel3", hist_point, 0, hist_range);
-			hoscd4 = new TH1F("hoscd4", "Channel4", hist_point, 0, hist_range);
-			c1->cd(1);
-			hoscd1->Draw();
-			c1->cd(2);
-			hoscd2->Draw();
-			c1->cd(3);
-			hoscd3->Draw();
-			c1->cd(4);
-			hoscd4->Draw();
-			gSystem->ProcessEvents();
-		}
+	if (adcflag == 1)	DrawADCInfo(32768, 0);
+	gSystem->ProcessEvents();
 
-		else
-		{
-			hoscd1->Reset();
-			hoscd2->Reset();
-			hoscd3->Reset();
-			hoscd4->Reset();
-
-			for (int j=0; j<hist_point; j++)
-			{
-				adc = data256[32+j*2] & 0xFF;
-				itmp = data256[32+j*2+1] & 0x0F;
-				adc = adc + (unsigned int)(itmp << 8);
-
-				if (channel == 1)
-					hoscd1->Fill(j*2, adc);
-				else if (channel == 2)
-					hoscd2->Fill(j*2, adc);
-				else if (channel == 3)
-					hoscd3->Fill(j*2, adc);
-				else if (channel == 4)
-					hoscd4->Fill(j*2, adc);
-			}
-			c1->cd(1);
-			hoscd1->Draw();
-			hoscd1->Sumw2(kFALSE);
-			c1->cd(2);
-			hoscd2->Draw();
-			hoscd2->Sumw2(kFALSE);
-			c1->cd(3);
-			hoscd3->Draw();
-			hoscd3->Sumw2(kFALSE);
-			c1->cd(4);
-			hoscd4->Draw();
-			hoscd4->Sumw2(kFALSE);
-			c1->Modified();
-			c1->Update();
-			gSystem->ProcessEvents();
-		}
-	}
-
-	if (tdcflag == 1)
-	{
-		if (hostd1 == 0)
-		{
-			hostd1 = new TH1F("hostd1", "Channel1", hist_point / 4, 0, hist_range);
-			hostd2 = new TH1F("hostd2", "Channel2", hist_point / 4, 0, hist_range);
-			hostd3 = new TH1F("hostd3", "Channel3", hist_point / 4, 0, hist_range);
-			hostd4 = new TH1F("hostd4", "Channel4", hist_point / 4, 0, hist_range);
-			c2->cd(1);
-			hostd1->Draw();
-			c2->cd(2);
-			hostd2->Draw();
-			c2->cd(3);
-			hostd3->Draw();
-			c2->cd(4);
-			hostd4->Draw();
-			gSystem->ProcessEvents();
-		}
-		else
-		{
-			hostd1->Reset();
-			hostd2->Reset();
-			hostd3->Reset();
-			hostd4->Reset();
-
-			for (int j=0; j<(hist_point / 4); j++)
-			{
-				tdc = (data256[32+j*8+1] >> 4) & 0xF;
-				itmp = (data256[32+j*8+3] >> 4) & 0xF;
-				tdc = tdc + (unsigned int)(itmp << 4);
-				itmp = (data256[32+j*8+5] >> 4) & 0x3;
-				tdc = tdc + (unsigned int)(itmp << 8);
-
-				if (channel == 1)
-					hostd1->Fill(j*8, tdc);
-				else if (channel == 2)
-					hostd2->Fill(j*8, tdc);
-				else if (channel == 3)
-					hostd3->Fill(j*8, tdc);
-				else if (channel == 4)
-					hostd4->Fill(j*8, tdc);
-			}
-			tdc = hostd1->GetMinimum();
-			c2->cd(1);
-			hostd1->Draw();
-			hostd1->Sumw2(kFALSE);
-			c2->cd(2);
-			hostd2->Draw();
-			hostd2->Sumw2(kFALSE);
-			c2->cd(3);
-			hostd3->Draw();
-			hostd3->Sumw2(kFALSE);
-			c2->cd(4);
-			hostd4->Draw();
-			hostd4->Sumw2(kFALSE);
-			c2->Modified();
-			c2->Update();
-			gSystem->ProcessEvents();
-		}
-	}
+	if (tdcflag == 1)	DrawTDCInfo(32768, 0);
+	gSystem->ProcessEvents();
 	printf("module ID = %d, channel ID = %d\n", mid, channel);
 	printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
 	printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
 	printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 	printf("-------------------------------------------------------------------------------------------------------\n");
 	fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-
-
-
 }

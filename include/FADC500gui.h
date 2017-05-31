@@ -96,6 +96,7 @@ class FADC500gui
 		TGLabel *lTEPO;
 		TGLabel *lPOL;
 		TGLabel *lADCMODE;
+		TGLabel *lFLUSH;
 
 		TGNumberEntryField *fNMODULE;
 		TGNumberEntryField *fPTRIGGER;
@@ -123,7 +124,7 @@ class FADC500gui
 		TGComboBox *fTEPO;
 		TGComboBox *fPOL[6][4];
 		TGComboBox *fADCMODE[6][4];
-
+		TGComboBox *fFLUSH;
 
 	public :
 		FADC500gui();
@@ -157,6 +158,7 @@ class FADC500gui
 		void SetADCDelay(char*);
 		void SetPSumWidth(char*);
 		void SetADCMode(int);
+		void SetFlush(int);
 		void SetSame();
 		void SetTCB();
 		void RunDAQ();

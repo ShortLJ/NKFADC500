@@ -312,6 +312,25 @@ FADC500gui::FADC500gui()
 	fTEPO->MoveResize(200,310,100,20);
 	fTEPO->Connect("Selected(Int_t)", "FADC500gui", this, "SetTEPO(Int_t)");
 
+
+	lFLUSH = new TGLabel(fCompositeFrame1, "Take Residual Data");
+	lFLUSH -> SetTextJustify(kTextLeft);
+	lFLUSH -> SetMargins(0, 0, 0, 0);
+	lFLUSH -> SetWrapLength(-1);
+	fCompositeFrame1 -> AddFrame(lFLUSH, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
+	lFLUSH -> MoveResize(20,310,170,20);
+
+	fFLUSH = new TGComboBox(fCompositeFrame1,-1,kHorizontalFrame | kSunkenFrame | kOwnBackground);
+	fFLUSH->SetName("Peak Sum OR Trigger");
+	fFLUSH->AddEntry("Yes",0);
+	fFLUSH->AddEntry("No",1);
+	fFLUSH->Resize(100,20);
+	fFLUSH->Select(-1);
+	fCompositeFrame1->AddFrame(fFLUSH, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+	fFLUSH->MoveResize(200,310,100,20);
+	fFLUSH->Connect("Selected(Int_t)", "FADC500gui", this, "SetFlush(Int_t)");
+
+
 	// function buttons
 
 	TGTextButton *SET = new TGTextButton(fCompositeFrame1,"SET SAME",-1,TGTextButton::GetDefaultGC()(),TGTextButton::GetDefaultFontStruct(),kRaisedFrame);
@@ -776,6 +795,7 @@ void FADC500gui::SaveSetting()
 	savesetting << fset.tew << endl;
 	savesetting << fset.tep << endl;
 	savesetting << fset.tep2 << endl;
+	savesetting << frun.flush << endl;
 	for (int i = 0; i < 6; i++)
 	{
 		savesetting << fset.rl[i] << endl;
@@ -836,6 +856,7 @@ void FADC500gui::OpenSetting()
     savesetting >> fset.tew;
     savesetting >> fset.tep;
     savesetting >> fset.tep2;
+    savesetting >> frun.flush;
 	for (int i = 0; i < 6; i++)
 	{
 	    savesetting >> fset.rl[i];
@@ -868,6 +889,7 @@ void FADC500gui::OpenSetting()
 	cout << "Pulse width trigger : " << fset.tew << endl;
 	cout << "Peak sum trigger : " << fset.tep << endl;
 	cout << "Peak sum OR trigger : " << fset.tep2 << endl;
+	cout << "Take Residual data : " << frun.flush << endl;
 
 	for (int i = 0; i < 6; i++)
 	{
@@ -916,6 +938,9 @@ void FADC500gui::SetParGUI()
 	
 	if (fset.tep2 == 1) fTEPO -> Select(0);
 	if (fset.tep2 == 0) fTEPO -> Select(1);
+
+	if (frun.flush == 1) fFLUSH -> Select(0);
+	if (frun.flush == 0) fFLUSH -> Select(1);
 	
 	for (int i = 0; i < 6;  i++)
 	{
@@ -1376,6 +1401,21 @@ void FADC500gui::SetTEPO(int value)
 	{
 		fset.tep2 = 0;	
 		cout << "***** Peak Sum OR Trigger : " << "Disable" << " *****" << endl;
+	}
+}
+
+
+void FADC500gui::SetFlush(int value)
+{
+	if (value == 0)
+	{
+		frun.flush = 1;
+		cout << "***** Take Residual Data : " << "Able" << " *****" << endl;
+	}
+	if (value == 1)
+	{
+		frun.flush = 0;	
+		cout << "***** Take Residual Data : " << "Disable" << " *****" << endl;
 	}
 }
 
