@@ -121,7 +121,7 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 					if (flag == 0)	break;
 					gSystem->ProcessEvents();
 				}
-				if (datasize[imod] == 32768)
+				if (datasize[imod] == 32768 && bcount > 16)
 				{
 					Data256(sid[imod]);
 					if (flag == 0)	break;
