@@ -19,19 +19,14 @@ May. 10. 2017.
 #include "NoticeFADC500IBSROOT.h"
 #include <vector>
 
+#define PC_DRAM		10
+#define MAX_READ	PC_DRAM*1024
+#define ARRAY_SIZE	MAX_READ*1024
+
 class FADC500run
 {
 	private:
-		unsigned char data[16384];
-		unsigned char data1[128][128];      // raw data array
-		unsigned char data2[64][256];      // raw data array
-		unsigned char data4[32][512];      // raw data array
-		unsigned char data8[16][1024];      // raw data array
-		unsigned char data16[8][2048];      // raw data array
-		unsigned char data32[4][4096];      // raw data array
-		unsigned char data64[2][8192];      // raw data array
-		unsigned char data128[16384];      // raw data array
-		unsigned char data256[32768];      // raw data array
+		unsigned char data[ARRAY_SIZE];
 		std::vector <int> sid;
 		int adc;                         // ADC data
 		int tdc;                         // TDC data
@@ -88,18 +83,10 @@ class FADC500run
 		TH1F *hostd4 = 0;
 
 		int FADC500DAQRun(TString ifilename, int nEvent, int nModule);
-		void Data1(int &sid);
-		void Data2(int &sid);
-		void Data4(int &sid);
-		void Data8(int &sid);
-		void Data16(int &sid);
-		void Data32(int &sid);
-		void Data64(int &sid);
-		void Data128(int &sid);
-		void Data256(int &sid);
 		void clearall();
-		void DrawADCInfo(int datasize, int ibunch);
-		void DrawTDCInfo(int datasize, int ibunch);
+		void PrintInfo();
+		void DrawADCInfo(int i);
+		void DrawTDCInfo(int i);
 		void TakeResidual(const int &nMod);
 };
 #endif
