@@ -139,7 +139,7 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 		iEvent = local_tnum;
 		gSystem->ProcessEvents();
 
-		if (iEvent >= nEvent-1)	break;
+		if (iEvent >= nEvent-1)	flag = 0;
 		gSystem->ProcessEvents();
 
 		if (flag == 0)	break;			

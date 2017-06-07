@@ -1672,8 +1672,10 @@ void FADC500gui::SetTCB()
 
 void FADC500gui::RunDAQ()
 {
+	TString orisaveFile = saveFile;
 	saveFile = saveFile.ReplaceAll(".", Form("%04d.", runnumber));
 	TString datafile = directory + saveFile;
+	saveFile = orisaveFile;
 
 	if (datafile.Length() >= 1 && tcbflag == 1)
 	{
