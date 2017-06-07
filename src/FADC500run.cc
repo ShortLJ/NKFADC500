@@ -24,7 +24,7 @@ May. 10. 2017.
 #include "NoticeFADC500IBSROOT.h"
 
 using namespace std;
-#define PC_DRAM     10
+#define PC_DRAM     50
 #define MAX_READ    PC_DRAM*1024
 #define ARRAY_SIZE  MAX_READ*1024
 
@@ -75,7 +75,7 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 			gSystem->ProcessEvents();
 			bcount = fadc->FADC500IBSread_BCOUNT(sid[imod]);
 
-			if (bcount)
+			if (bcount > 16)
 			{
 				if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid[mid],bcount);
 				if (bcount > MAX_READ)	bcount = MAX_READ;
@@ -141,7 +141,8 @@ void FADC500run::clearall()
 
 void FADC500run::PrintInfo()
 {
-	for (Int_t i = 0; i < bcount*1024; i++)
+	int i = 0;
+	while (i < bcount*1024)
 	{
 		data_length =  data[i] & 0xFF;
 		itmp = data[i+1] & 0xFF;

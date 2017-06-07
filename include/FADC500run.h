@@ -19,7 +19,7 @@ May. 10. 2017.
 #include "NoticeFADC500IBSROOT.h"
 #include <vector>
 
-#define PC_DRAM		10
+#define PC_DRAM		50
 #define MAX_READ	PC_DRAM*1024
 #define ARRAY_SIZE	MAX_READ*1024
 
