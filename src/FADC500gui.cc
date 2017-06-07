@@ -220,15 +220,28 @@ FADC500gui::FADC500gui()
     fCompositeFrame1->AddFrame(fNEVENT, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
     fNEVENT -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetNEvent(const Char_t *)");
 
+	lRUNNUM= new TGLabel(fCompositeFrame1, "Run Number");
+    lRUNNUM-> SetTextJustify(kTextLeft);
+    lRUNNUM-> SetMargins(0, 0, 0, 0);
+    lRUNNUM-> SetWrapLength(-1);
+    fCompositeFrame1 -> AddFrame(lRUNNUM, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
+    lRUNNUM-> MoveResize(20,130,170,20);
+
+    fRUNNUM = new TGNumberEntryField(fCompositeFrame1, 0, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 0, 9990);
+    fRUNNUM->MoveResize(200,130,100,20);
+    fCompositeFrame1->AddFrame(fRUNNUM, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+    fRUNNUM -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetRunNum(const Char_t *)");
+
+
     lTRIGDELAY = new TGLabel(fCompositeFrame1, "Trigger Delay(ns)");
     lTRIGDELAY -> SetTextJustify(kTextLeft);
     lTRIGDELAY -> SetMargins(0, 0, 0, 0);
     lTRIGDELAY -> SetWrapLength(-1);
     fCompositeFrame1 -> AddFrame(lTRIGDELAY, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
-    lTRIGDELAY -> MoveResize(20,160,170,20);
+    lTRIGDELAY -> MoveResize(20,180,170,20);
 
     fTRIGDELAY = new TGNumberEntryField(fCompositeFrame1, 0, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 0, 32768);
-    fTRIGDELAY->MoveResize(200,160,100,20);
+    fTRIGDELAY->MoveResize(200,180,100,20);
     fCompositeFrame1->AddFrame(fTRIGDELAY, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
     fTRIGDELAY -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetTrigDelay(const Char_t *)");
 
@@ -237,10 +250,10 @@ FADC500gui::FADC500gui()
     lTRIGCOINWIDTH -> SetMargins(0, 0, 0, 0);
     lTRIGCOINWIDTH -> SetWrapLength(-1);
     fCompositeFrame1 -> AddFrame(lTRIGCOINWIDTH, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
-    lTRIGCOINWIDTH -> MoveResize(20,190,170,20);
+    lTRIGCOINWIDTH -> MoveResize(20,210,170,20);
 
     fTRIGCOINWIDTH = new TGNumberEntryField(fCompositeFrame1, 0, 0, TGNumberFormat::kNESInteger, TGNumberFormat::kNEANonNegative, TGNumberFormat::kNELLimitMinMax, 8, 32760);
-    fTRIGCOINWIDTH->MoveResize(200,190,100,20);
+    fTRIGCOINWIDTH->MoveResize(200,210,100,20);
     fCompositeFrame1->AddFrame(fTRIGCOINWIDTH, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
     fTRIGCOINWIDTH -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetTrigCoinWidth(const Char_t *)");
 
@@ -249,7 +262,7 @@ FADC500gui::FADC500gui()
 	lTEN -> SetMargins(0, 0, 0, 0);
 	lTEN -> SetWrapLength(-1);
 	fCompositeFrame1 -> AddFrame(lTEN, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
-	lTEN -> MoveResize(20,220,170,20);
+	lTEN -> MoveResize(20,240,170,20);
 
 	fTEN = new TGComboBox(fCompositeFrame1,-1,kHorizontalFrame | kSunkenFrame | kOwnBackground);
 	fTEN->SetName("Pulse Count Trigger");
@@ -258,7 +271,7 @@ FADC500gui::FADC500gui()
 	fTEN->Resize(100,20);
 	fTEN->Select(-1);
 	fCompositeFrame1->AddFrame(fTEN, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-	fTEN->MoveResize(200,220,100,20);
+	fTEN->MoveResize(200,240,100,20);
 	fTEN->Connect("Selected(Int_t)", "FADC500gui", this, "SetTEN(Int_t)");
 
 	lTEW = new TGLabel(fCompositeFrame1, "Pulse Width Trigger");
@@ -266,7 +279,7 @@ FADC500gui::FADC500gui()
 	lTEW -> SetMargins(0, 0, 0, 0); 
 	lTEW -> SetWrapLength(-1);
 	fCompositeFrame1 -> AddFrame(lTEW, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
-	lTEW -> MoveResize(20,250,170,20);
+	lTEW -> MoveResize(20,270,170,20);
 
 	fTEW = new TGComboBox(fCompositeFrame1,-1,kHorizontalFrame | kSunkenFrame | kOwnBackground);
 	fTEW->SetName("Pulse Width Trigger");
@@ -275,7 +288,7 @@ FADC500gui::FADC500gui()
 	fTEW->Resize(100,20);
 	fTEW->Select(-1);
 	fCompositeFrame1->AddFrame(fTEW, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-	fTEW->MoveResize(200,250,100,20);
+	fTEW->MoveResize(200,270,100,20);
 	fTEW->Connect("Selected(Int_t)", "FADC500gui", this, "SetTEW(Int_t)");
 
 	lTEP = new TGLabel(fCompositeFrame1, "Peak Sum Trigger");
@@ -283,7 +296,7 @@ FADC500gui::FADC500gui()
 	lTEP -> SetMargins(0, 0, 0, 0);
 	lTEP -> SetWrapLength(-1);
 	fCompositeFrame1 -> AddFrame(lTEP, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
-	lTEP -> MoveResize(20,280,170,20);
+	lTEP -> MoveResize(20,300,170,20);
 
 	fTEP = new TGComboBox(fCompositeFrame1,-1,kHorizontalFrame | kSunkenFrame | kOwnBackground);
 	fTEP->SetName("Peak Sum Trigger");
@@ -292,7 +305,7 @@ FADC500gui::FADC500gui()
 	fTEP->Resize(100,20);
 	fTEP->Select(-1);
 	fCompositeFrame1->AddFrame(fTEP, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-	fTEP->MoveResize(200,280,100,20);
+	fTEP->MoveResize(200,300,100,20);
 	fTEP->Connect("Selected(Int_t)", "FADC500gui", this, "SetTEP(Int_t)");
 
 	lTEPO = new TGLabel(fCompositeFrame1, "Peak Sum OR Trigger");
@@ -300,7 +313,7 @@ FADC500gui::FADC500gui()
 	lTEPO -> SetMargins(0, 0, 0, 0);
 	lTEPO -> SetWrapLength(-1);
 	fCompositeFrame1 -> AddFrame(lTEPO, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
-	lTEPO -> MoveResize(20,310,170,20);
+	lTEPO -> MoveResize(20,330,170,20);
 
 	fTEPO = new TGComboBox(fCompositeFrame1,-1,kHorizontalFrame | kSunkenFrame | kOwnBackground);
 	fTEPO->SetName("Peak Sum OR Trigger");
@@ -309,7 +322,7 @@ FADC500gui::FADC500gui()
 	fTEPO->Resize(100,20);
 	fTEPO->Select(-1);
 	fCompositeFrame1->AddFrame(fTEPO, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-	fTEPO->MoveResize(200,310,100,20);
+	fTEPO->MoveResize(200,330,100,20);
 	fTEPO->Connect("Selected(Int_t)", "FADC500gui", this, "SetTEPO(Int_t)");
 
 
@@ -318,7 +331,7 @@ FADC500gui::FADC500gui()
 	lFLUSH -> SetMargins(0, 0, 0, 0);
 	lFLUSH -> SetWrapLength(-1);
 	fCompositeFrame1 -> AddFrame(lFLUSH, new TGLayoutHints(kLHintsLeft | kLHintsTop, 2, 2, 2, 2));
-	lFLUSH -> MoveResize(20,310,170,20);
+	lFLUSH -> MoveResize(20,360,170,20);
 
 	fFLUSH = new TGComboBox(fCompositeFrame1,-1,kHorizontalFrame | kSunkenFrame | kOwnBackground);
 	fFLUSH->SetName("Peak Sum OR Trigger");
@@ -327,7 +340,7 @@ FADC500gui::FADC500gui()
 	fFLUSH->Resize(100,20);
 	fFLUSH->Select(-1);
 	fCompositeFrame1->AddFrame(fFLUSH, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-	fFLUSH->MoveResize(200,310,100,20);
+	fFLUSH->MoveResize(200,360,100,20);
 	fFLUSH->Connect("Selected(Int_t)", "FADC500gui", this, "SetFlush(Int_t)");
 
 
@@ -340,7 +353,7 @@ FADC500gui::FADC500gui()
     SET->SetWrapLength(-1);
     SET->Resize(100,35);
     fCompositeFrame1->AddFrame(SET, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-    SET->MoveResize(20,450,100,35);
+    SET->MoveResize(20,420,100,35);
 
 	TGTextButton *TCB = new TGTextButton(fCompositeFrame1,"TCB",-1,TGTextButton::GetDefaultGC()(),TGTextButton::GetDefaultFontStruct(),kRaisedFrame);
     TCB -> Connect("Clicked()", "FADC500gui", this, "SetTCB()");
@@ -349,7 +362,7 @@ FADC500gui::FADC500gui()
     TCB->SetWrapLength(-1);
     TCB->Resize(100,35);
     fCompositeFrame1->AddFrame(TCB, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-    TCB->MoveResize(150,450,100,35);
+    TCB->MoveResize(150,420,100,35);
 
 	TGTextButton *RUN = new TGTextButton(fCompositeFrame1,"RUN",-1,TGTextButton::GetDefaultGC()(),TGTextButton::GetDefaultFontStruct(),kRaisedFrame);
     RUN -> Connect("Clicked()", "FADC500gui", this, "RunDAQ()");
@@ -358,7 +371,7 @@ FADC500gui::FADC500gui()
     RUN->SetWrapLength(-1);
     RUN->Resize(100,35);
     fCompositeFrame1->AddFrame(RUN, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-    RUN->MoveResize(280,450,100,35);
+    RUN->MoveResize(280,420,100,35);
 
     TGTextButton *STOP = new TGTextButton(fCompositeFrame1,"STOP",-1,TGTextButton::GetDefaultGC()(),TGTextButton::GetDefaultFontStruct(),kRaisedFrame);
     STOP -> Connect("Clicked()", "FADC500gui", this, "StopDAQ()");
@@ -367,7 +380,27 @@ FADC500gui::FADC500gui()
     STOP->SetWrapLength(-1);
     STOP->Resize(100,35);
     fCompositeFrame1->AddFrame(STOP, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
-    STOP->MoveResize(410,450,100,35);
+    STOP->MoveResize(410,420,100,35);
+
+    TGTextButton *PRINTON = new TGTextButton(fCompositeFrame1,"PRINT ON",-1,TGTextButton::GetDefaultGC()(),TGTextButton::GetDefaultFontStruct(),kRaisedFrame);
+    PRINTON -> Connect("Clicked()", "FADC500gui", this, "PRINTOn()");
+    PRINTON->SetTextJustify(36);
+    PRINTON->SetMargins(0,0,0,0);
+    PRINTON->SetWrapLength(-1);
+    PRINTON->Resize(100,35);
+    fCompositeFrame1->AddFrame(PRINTON, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+    PRINTON->MoveResize(20,465,100,35);
+
+    TGTextButton *PRINTOff = new TGTextButton(fCompositeFrame1,"PRINT OFF",-1,TGTextButton::GetDefaultGC()(),TGTextButton::GetDefaultFontStruct(),kRaisedFrame);
+    PRINTOff -> Connect("Clicked()", "FADC500gui", this, "PRINTOff()");
+    PRINTOff->SetTextJustify(36);
+    PRINTOff->SetMargins(0,0,0,0);
+    PRINTOff->SetWrapLength(-1);
+    PRINTOff->Resize(100,35);
+    fCompositeFrame1->AddFrame(PRINTOff, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
+    PRINTOff->MoveResize(150,465,100,35);
+
+
 
 
 
@@ -1639,12 +1672,14 @@ void FADC500gui::SetTCB()
 
 void FADC500gui::RunDAQ()
 {
+	saveFile = saveFile.ReplaceAll(".", Form("%04d.", runnumber));
 	TString datafile = directory + saveFile;
 
 	if (datafile.Length() >= 1 && tcbflag == 1)
 	{
 		frun.FADC500DAQRun(datafile, nEvent, nModule);
 		tcbflag = 0;
+		runnumber++;
 	}	
 	if (datafile.Length() == 0)
 	{
@@ -1685,4 +1720,21 @@ void FADC500gui::TDCOff()
 {
 	frun.tdcflag = 0;
 	gSystem -> ProcessEvents();
+}
+
+void FADC500gui::PRINTOn()
+{
+	frun.printoutflag = 1;
+	gSystem -> ProcessEvents();
+}
+
+void FADC500gui::PRINTOff()
+{
+	frun.printoutflag = 0;
+	gSystem -> ProcessEvents();
+}
+
+void FADC500gui::SetRunNum(char* value)
+{
+	runnumber= atoi(value); 
 }

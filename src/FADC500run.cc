@@ -61,6 +61,7 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 	flag = 1;
 	adcflag = 1;
 	tdcflag = 1;
+	printoutflag = 1;
 	iEvent = 0;
 
 	while (1)
@@ -477,110 +478,113 @@ void FADC500run::Data1(int &sid)
 
 		fwrite(data1[ibunch], 1, 128, fp);
 
-		data_length =  data1[ibunch][0] & 0xFF;
-		itmp = data1[ibunch][1] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 8);
-		itmp = data1[ibunch][2] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 16);
-		itmp = data1[ibunch][3] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 24);
+		if (printoutflag == 1)
+		{
+			data_length =  data1[ibunch][0] & 0xFF;
+			itmp = data1[ibunch][1] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 8);
+			itmp = data1[ibunch][2] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 16);
+			itmp = data1[ibunch][3] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 24);
 
-		run_number = data1[ibunch][4] & 0xFF;
-		itmp = data1[ibunch][5] & 0xFF;
-		run_number = run_number + (unsigned int)(itmp << 8);
+			run_number = data1[ibunch][4] & 0xFF;
+			itmp = data1[ibunch][5] & 0xFF;
+			run_number = run_number + (unsigned int)(itmp << 8);
 
-		trigger_type = data1[ibunch][6] & 0x0F;
+			trigger_type = data1[ibunch][6] & 0x0F;
 
-		itmp = data1[ibunch][6] & 0xF0;
-		trigger_destination = itmp >> 4;
+			itmp = data1[ibunch][6] & 0xF0;
+			trigger_destination = itmp >> 4;
 
-		trigger_number = data1[ibunch][7] & 0xFF;
-		itmp = data1[ibunch][8] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 8);
-		itmp = data1[ibunch][9] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 16);
-		itmp = data1[ibunch][10] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 24);					
+			trigger_number = data1[ibunch][7] & 0xFF;
+			itmp = data1[ibunch][8] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 8);
+			itmp = data1[ibunch][9] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 16);
+			itmp = data1[ibunch][10] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 24);					
 
-		ttime = data1[ibunch][11] & 0xFF;
-		ttime = ttime*8;
+			ttime = data1[ibunch][11] & 0xFF;
+			ttime = ttime*8;
 
-		ltmp = data1[ibunch][12] & 0xFF;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data1[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data1[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		ttime = ttime + ltmp * 1000;
+			ltmp = data1[ibunch][12] & 0xFF;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data1[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data1[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			ttime = ttime + ltmp * 1000;
 
-		mid = data1[ibunch][15] & 0xFF;
+			mid = data1[ibunch][15] & 0xFF;
 
-		channel = data1[ibunch][16] & 0xFF;
+			channel = data1[ibunch][16] & 0xFF;
 
-		local_tnum = data1[ibunch][17] & 0xFF;
-		itmp = data1[ibunch][18] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 8);
-		itmp = data1[ibunch][19] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 16);
-		itmp = data1[ibunch][20] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 24);
+			local_tnum = data1[ibunch][17] & 0xFF;
+			itmp = data1[ibunch][18] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 8);
+			itmp = data1[ibunch][19] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 16);
+			itmp = data1[ibunch][20] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 24);
 
-		trigger_pattern = data1[ibunch][21] & 0xFF;
-		itmp = data1[ibunch][22] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
-		itmp = data1[ibunch][23] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
-		itmp = data1[ibunch][24] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
+			trigger_pattern = data1[ibunch][21] & 0xFF;
+			itmp = data1[ibunch][22] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
+			itmp = data1[ibunch][23] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
+			itmp = data1[ibunch][24] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
 
-		ltime = data1[ibunch][25] & 0xFF;
-		ltime = ltime*8;
+			ltime = data1[ibunch][25] & 0xFF;
+			ltime = ltime*8;
 
-		ltmp = data1[ibunch][26] & 0xFF;
-		ltime = ltime + ltmp*1000;
-		ltmp = data1[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		ltime = ltime + ltmp*1000;
-		ltmp = data1[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		ltime = ltime + ltmp*1000;
+			ltmp = data1[ibunch][26] & 0xFF;
+			ltime = ltime + ltmp*1000;
+			ltmp = data1[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			ltime = ltime + ltmp*1000;
+			ltmp = data1[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			ltime = ltime + ltmp*1000;
 
-		trig_timel = data1[ibunch][11] & 0xFF;
+			trig_timel = data1[ibunch][11] & 0xFF;
 
-		ltmp = data1[ibunch][12] & 0xFF;
-		trig_timeh = ltmp;
-		ltmp = data1[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		trig_timeh = trig_timeh + ltmp;
-		ltmp = data1[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		trig_timeh = trig_timeh + ltmp;
+			ltmp = data1[ibunch][12] & 0xFF;
+			trig_timeh = ltmp;
+			ltmp = data1[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			trig_timeh = trig_timeh + ltmp;
+			ltmp = data1[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			trig_timeh = trig_timeh + ltmp;
 
-		start_timel = data1[ibunch][25] & 0xFF;
+			start_timel = data1[ibunch][25] & 0xFF;
 
-		ltmp = data1[ibunch][26] & 0xFF;
-		start_timeh = ltmp;
-		ltmp = data1[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		start_timeh = start_timeh + ltmp;
-		ltmp = data1[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		start_timeh = start_timeh + ltmp;
-		hist_point = (data_length - 32)/2;
-		hist_range = hist_point * 2;
-		gSystem->ProcessEvents();
-		if (adcflag == 1)	DrawADCInfo(128, ibunch);
-		gSystem->ProcessEvents();
+			ltmp = data1[ibunch][26] & 0xFF;
+			start_timeh = ltmp;
+			ltmp = data1[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			start_timeh = start_timeh + ltmp;
+			ltmp = data1[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			start_timeh = start_timeh + ltmp;
+			hist_point = (data_length - 32)/2;
+			hist_range = hist_point * 2;
+			gSystem->ProcessEvents();
+			if (adcflag == 1)	DrawADCInfo(128, ibunch);
+			gSystem->ProcessEvents();
 
-		if (tdcflag == 1)	DrawTDCInfo(128, ibunch);
-		gSystem->ProcessEvents();
-		printf("module ID = %d, channel ID = %d\n", mid, channel);
-		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
-		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
-		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
-		printf("-------------------------------------------------------------------------------------------------------\n");
-		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+			if (tdcflag == 1)	DrawTDCInfo(128, ibunch);
+			gSystem->ProcessEvents();
+			printf("module ID = %d, channel ID = %d\n", mid, channel);
+			printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
+			printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
+			printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
+			printf("-------------------------------------------------------------------------------------------------------\n");
+			fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+		}
 
 	}
 
@@ -603,111 +607,113 @@ void FADC500run::Data2(int &sid)
 
 		fwrite(data2[ibunch], 1, 256, fp);
 
-		data_length =  data2[ibunch][0] & 0xFF;
-		itmp = data2[ibunch][1] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 8);
-		itmp = data2[ibunch][2] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 16);
-		itmp = data2[ibunch][3] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 24);
+		if (printoutflag == 1)
+		{
+			data_length =  data2[ibunch][0] & 0xFF;
+			itmp = data2[ibunch][1] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 8);
+			itmp = data2[ibunch][2] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 16);
+			itmp = data2[ibunch][3] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 24);
 
-		run_number = data2[ibunch][4] & 0xFF;
-		itmp = data2[ibunch][5] & 0xFF;
-		run_number = run_number + (unsigned int)(itmp << 8);
+			run_number = data2[ibunch][4] & 0xFF;
+			itmp = data2[ibunch][5] & 0xFF;
+			run_number = run_number + (unsigned int)(itmp << 8);
 
-		trigger_type = data2[ibunch][6] & 0x0F;
+			trigger_type = data2[ibunch][6] & 0x0F;
 
-		itmp = data2[ibunch][6] & 0xF0;
-		trigger_destination = itmp >> 4;
+			itmp = data2[ibunch][6] & 0xF0;
+			trigger_destination = itmp >> 4;
 
-		trigger_number = data2[ibunch][7] & 0xFF;
-		itmp = data2[ibunch][8] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 8);
-		itmp = data2[ibunch][9] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 16);
-		itmp = data2[ibunch][10] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 24);					
+			trigger_number = data2[ibunch][7] & 0xFF;
+			itmp = data2[ibunch][8] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 8);
+			itmp = data2[ibunch][9] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 16);
+			itmp = data2[ibunch][10] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 24);					
 
-		ttime = data2[ibunch][11] & 0xFF;
-		ttime = ttime*8;
+			ttime = data2[ibunch][11] & 0xFF;
+			ttime = ttime*8;
 
-		ltmp = data2[ibunch][12] & 0xFF;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data2[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data2[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		ttime = ttime + ltmp * 1000;
+			ltmp = data2[ibunch][12] & 0xFF;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data2[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data2[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			ttime = ttime + ltmp * 1000;
 
-		mid = data2[ibunch][15] & 0xFF;
+			mid = data2[ibunch][15] & 0xFF;
 
-		channel = data2[ibunch][16] & 0xFF;
+			channel = data2[ibunch][16] & 0xFF;
 
-		local_tnum = data2[ibunch][17] & 0xFF;
-		itmp = data2[ibunch][18] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 8);
-		itmp = data2[ibunch][19] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 16);
-		itmp = data2[ibunch][20] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 24);
+			local_tnum = data2[ibunch][17] & 0xFF;
+			itmp = data2[ibunch][18] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 8);
+			itmp = data2[ibunch][19] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 16);
+			itmp = data2[ibunch][20] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 24);
 
-		trigger_pattern = data2[ibunch][21] & 0xFF;
-		itmp = data2[ibunch][22] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
-		itmp = data2[ibunch][23] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
-		itmp = data2[ibunch][24] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
+			trigger_pattern = data2[ibunch][21] & 0xFF;
+			itmp = data2[ibunch][22] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
+			itmp = data2[ibunch][23] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
+			itmp = data2[ibunch][24] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
 
-		ltime = data2[ibunch][25] & 0xFF;
-		ltime = ltime*8;
+			ltime = data2[ibunch][25] & 0xFF;
+			ltime = ltime*8;
 
-		ltmp = data2[ibunch][26] & 0xFF;
-		ltime = ltime + ltmp*1000;
-		ltmp = data2[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		ltime = ltime + ltmp*1000;
-		ltmp = data2[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		ltime = ltime + ltmp*1000;
+			ltmp = data2[ibunch][26] & 0xFF;
+			ltime = ltime + ltmp*1000;
+			ltmp = data2[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			ltime = ltime + ltmp*1000;
+			ltmp = data2[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			ltime = ltime + ltmp*1000;
 
-		trig_timel = data2[ibunch][11] & 0xFF;
+			trig_timel = data2[ibunch][11] & 0xFF;
 
-		ltmp = data2[ibunch][12] & 0xFF;
-		trig_timeh = ltmp;
-		ltmp = data2[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		trig_timeh = trig_timeh + ltmp;
-		ltmp = data2[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		trig_timeh = trig_timeh + ltmp;
+			ltmp = data2[ibunch][12] & 0xFF;
+			trig_timeh = ltmp;
+			ltmp = data2[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			trig_timeh = trig_timeh + ltmp;
+			ltmp = data2[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			trig_timeh = trig_timeh + ltmp;
 
-		start_timel = data2[ibunch][25] & 0xFF;
+			start_timel = data2[ibunch][25] & 0xFF;
 
-		ltmp = data2[ibunch][26] & 0xFF;
-		start_timeh = ltmp;
-		ltmp = data2[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		start_timeh = start_timeh + ltmp;
-		ltmp = data2[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		start_timeh = start_timeh + ltmp;
-		hist_point = (data_length - 32)/2;
-		hist_range = hist_point * 2;
-		gSystem->ProcessEvents();
-		if (adcflag == 1)	DrawADCInfo(256, ibunch);
-		gSystem->ProcessEvents();
+			ltmp = data2[ibunch][26] & 0xFF;
+			start_timeh = ltmp;
+			ltmp = data2[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			start_timeh = start_timeh + ltmp;
+			ltmp = data2[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			start_timeh = start_timeh + ltmp;
+			hist_point = (data_length - 32)/2;
+			hist_range = hist_point * 2;
+			gSystem->ProcessEvents();
+			if (adcflag == 1)	DrawADCInfo(256, ibunch);
+			gSystem->ProcessEvents();
 
-		if (tdcflag == 1)	DrawTDCInfo(256, ibunch);
-		gSystem->ProcessEvents();
-		printf("module ID = %d, channel ID = %d\n", mid, channel);
-		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
-		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
-		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
-		printf("-------------------------------------------------------------------------------------------------------\n");
-		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-
+			if (tdcflag == 1)	DrawTDCInfo(256, ibunch);
+			gSystem->ProcessEvents();
+			printf("module ID = %d, channel ID = %d\n", mid, channel);
+			printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
+			printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
+			printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
+			printf("-------------------------------------------------------------------------------------------------------\n");
+			fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+		}
 	}
 
 	gSystem->ProcessEvents();
@@ -729,110 +735,113 @@ void FADC500run::Data4(int &sid)
 
 		fwrite(data4[ibunch], 1, 512, fp);
 
-		data_length =  data4[ibunch][0] & 0xFF;
-		itmp = data4[ibunch][1] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 8);
-		itmp = data4[ibunch][2] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 16);
-		itmp = data4[ibunch][3] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 24);
+		if (printoutflag == 1)
+		{
+			data_length =  data4[ibunch][0] & 0xFF;
+			itmp = data4[ibunch][1] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 8);
+			itmp = data4[ibunch][2] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 16);
+			itmp = data4[ibunch][3] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 24);
 
-		run_number = data4[ibunch][4] & 0xFF;
-		itmp = data4[ibunch][5] & 0xFF;
-		run_number = run_number + (unsigned int)(itmp << 8);
+			run_number = data4[ibunch][4] & 0xFF;
+			itmp = data4[ibunch][5] & 0xFF;
+			run_number = run_number + (unsigned int)(itmp << 8);
 
-		trigger_type = data4[ibunch][6] & 0x0F;
+			trigger_type = data4[ibunch][6] & 0x0F;
 
-		itmp = data4[ibunch][6] & 0xF0;
-		trigger_destination = itmp >> 4;
+			itmp = data4[ibunch][6] & 0xF0;
+			trigger_destination = itmp >> 4;
 
-		trigger_number = data4[ibunch][7] & 0xFF;
-		itmp = data4[ibunch][8] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 8);
-		itmp = data4[ibunch][9] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 16);
-		itmp = data4[ibunch][10] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 24);					
+			trigger_number = data4[ibunch][7] & 0xFF;
+			itmp = data4[ibunch][8] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 8);
+			itmp = data4[ibunch][9] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 16);
+			itmp = data4[ibunch][10] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 24);					
 
-		ttime = data4[ibunch][11] & 0xFF;
-		ttime = ttime*8;
+			ttime = data4[ibunch][11] & 0xFF;
+			ttime = ttime*8;
 
-		ltmp = data4[ibunch][12] & 0xFF;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data4[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data4[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		ttime = ttime + ltmp * 1000;
+			ltmp = data4[ibunch][12] & 0xFF;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data4[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data4[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			ttime = ttime + ltmp * 1000;
 
-		mid = data4[ibunch][15] & 0xFF;
+			mid = data4[ibunch][15] & 0xFF;
 
-		channel = data4[ibunch][16] & 0xFF;
+			channel = data4[ibunch][16] & 0xFF;
 
-		local_tnum = data4[ibunch][17] & 0xFF;
-		itmp = data4[ibunch][18] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 8);
-		itmp = data4[ibunch][19] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 16);
-		itmp = data4[ibunch][20] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 24);
+			local_tnum = data4[ibunch][17] & 0xFF;
+			itmp = data4[ibunch][18] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 8);
+			itmp = data4[ibunch][19] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 16);
+			itmp = data4[ibunch][20] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 24);
 
-		trigger_pattern = data4[ibunch][21] & 0xFF;
-		itmp = data4[ibunch][22] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
-		itmp = data4[ibunch][23] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
-		itmp = data4[ibunch][24] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
+			trigger_pattern = data4[ibunch][21] & 0xFF;
+			itmp = data4[ibunch][22] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
+			itmp = data4[ibunch][23] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
+			itmp = data4[ibunch][24] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
 
-		ltime = data4[ibunch][25] & 0xFF;
-		ltime = ltime*8;
+			ltime = data4[ibunch][25] & 0xFF;
+			ltime = ltime*8;
 
-		ltmp = data4[ibunch][26] & 0xFF;
-		ltime = ltime + ltmp*1000;
-		ltmp = data4[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		ltime = ltime + ltmp*1000;
-		ltmp = data4[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		ltime = ltime + ltmp*1000;
+			ltmp = data4[ibunch][26] & 0xFF;
+			ltime = ltime + ltmp*1000;
+			ltmp = data4[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			ltime = ltime + ltmp*1000;
+			ltmp = data4[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			ltime = ltime + ltmp*1000;
 
-		trig_timel = data4[ibunch][11] & 0xFF;
+			trig_timel = data4[ibunch][11] & 0xFF;
 
-		ltmp = data4[ibunch][12] & 0xFF;
-		trig_timeh = ltmp;
-		ltmp = data4[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		trig_timeh = trig_timeh + ltmp;
-		ltmp = data4[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		trig_timeh = trig_timeh + ltmp;
+			ltmp = data4[ibunch][12] & 0xFF;
+			trig_timeh = ltmp;
+			ltmp = data4[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			trig_timeh = trig_timeh + ltmp;
+			ltmp = data4[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			trig_timeh = trig_timeh + ltmp;
 
-		start_timel = data4[ibunch][25] & 0xFF;
+			start_timel = data4[ibunch][25] & 0xFF;
 
-		ltmp = data4[ibunch][26] & 0xFF;
-		start_timeh = ltmp;
-		ltmp = data4[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		start_timeh = start_timeh + ltmp;
-		ltmp = data4[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		start_timeh = start_timeh + ltmp;
-		hist_point = (data_length - 32)/2;
-		hist_range = hist_point * 2;
-		gSystem->ProcessEvents();
-		if (adcflag == 1)	DrawADCInfo(512, ibunch);
-		gSystem->ProcessEvents();
+			ltmp = data4[ibunch][26] & 0xFF;
+			start_timeh = ltmp;
+			ltmp = data4[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			start_timeh = start_timeh + ltmp;
+			ltmp = data4[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			start_timeh = start_timeh + ltmp;
+			hist_point = (data_length - 32)/2;
+			hist_range = hist_point * 2;
+			gSystem->ProcessEvents();
+			if (adcflag == 1)	DrawADCInfo(512, ibunch);
+			gSystem->ProcessEvents();
 
-		if (tdcflag == 1)	DrawTDCInfo(512, ibunch);
-		gSystem->ProcessEvents();
-		printf("module ID = %d, channel ID = %d\n", mid, channel);
-		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
-		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
-		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
-		printf("-------------------------------------------------------------------------------------------------------\n");
-		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+			if (tdcflag == 1)	DrawTDCInfo(512, ibunch);
+			gSystem->ProcessEvents();
+			printf("module ID = %d, channel ID = %d\n", mid, channel);
+			printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
+			printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
+			printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
+			printf("-------------------------------------------------------------------------------------------------------\n");
+			fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+		}
 
 	}
 
@@ -854,111 +863,113 @@ void FADC500run::Data8(int &sid)
 
 		fwrite(data8[ibunch], 1, 1024, fp);
 
-		data_length =  data8[ibunch][0] & 0xFF;
-		itmp = data8[ibunch][1] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 8);
-		itmp = data8[ibunch][2] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 16);
-		itmp = data8[ibunch][3] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 24);
+		if (printoutflag == 1)
+		{
+			data_length =  data8[ibunch][0] & 0xFF;
+			itmp = data8[ibunch][1] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 8);
+			itmp = data8[ibunch][2] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 16);
+			itmp = data8[ibunch][3] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 24);
 
-		run_number = data8[ibunch][4] & 0xFF;
-		itmp = data8[ibunch][5] & 0xFF;
-		run_number = run_number + (unsigned int)(itmp << 8);
+			run_number = data8[ibunch][4] & 0xFF;
+			itmp = data8[ibunch][5] & 0xFF;
+			run_number = run_number + (unsigned int)(itmp << 8);
 
-		trigger_type = data8[ibunch][6] & 0x0F;
+			trigger_type = data8[ibunch][6] & 0x0F;
 
-		itmp = data8[ibunch][6] & 0xF0;
-		trigger_destination = itmp >> 4;
+			itmp = data8[ibunch][6] & 0xF0;
+			trigger_destination = itmp >> 4;
 
-		trigger_number = data8[ibunch][7] & 0xFF;
-		itmp = data8[ibunch][8] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 8);
-		itmp = data8[ibunch][9] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 16);
-		itmp = data8[ibunch][10] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 24);					
+			trigger_number = data8[ibunch][7] & 0xFF;
+			itmp = data8[ibunch][8] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 8);
+			itmp = data8[ibunch][9] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 16);
+			itmp = data8[ibunch][10] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 24);					
 
-		ttime = data8[ibunch][11] & 0xFF;
-		ttime = ttime*8;
+			ttime = data8[ibunch][11] & 0xFF;
+			ttime = ttime*8;
 
-		ltmp = data8[ibunch][12] & 0xFF;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data8[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data8[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		ttime = ttime + ltmp * 1000;
+			ltmp = data8[ibunch][12] & 0xFF;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data8[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data8[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			ttime = ttime + ltmp * 1000;
 
-		mid = data8[ibunch][15] & 0xFF;
+			mid = data8[ibunch][15] & 0xFF;
 
-		channel = data8[ibunch][16] & 0xFF;
+			channel = data8[ibunch][16] & 0xFF;
 
-		local_tnum = data8[ibunch][17] & 0xFF;
-		itmp = data8[ibunch][18] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 8);
-		itmp = data8[ibunch][19] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 16);
-		itmp = data8[ibunch][20] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 24);
+			local_tnum = data8[ibunch][17] & 0xFF;
+			itmp = data8[ibunch][18] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 8);
+			itmp = data8[ibunch][19] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 16);
+			itmp = data8[ibunch][20] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 24);
 
-		trigger_pattern = data8[ibunch][21] & 0xFF;
-		itmp = data8[ibunch][22] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
-		itmp = data8[ibunch][23] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
-		itmp = data8[ibunch][24] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
+			trigger_pattern = data8[ibunch][21] & 0xFF;
+			itmp = data8[ibunch][22] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
+			itmp = data8[ibunch][23] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
+			itmp = data8[ibunch][24] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
 
-		ltime = data8[ibunch][25] & 0xFF;
-		ltime = ltime*8;
+			ltime = data8[ibunch][25] & 0xFF;
+			ltime = ltime*8;
 
-		ltmp = data8[ibunch][26] & 0xFF;
-		ltime = ltime + ltmp*1000;
-		ltmp = data8[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		ltime = ltime + ltmp*1000;
-		ltmp = data8[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		ltime = ltime + ltmp*1000;
+			ltmp = data8[ibunch][26] & 0xFF;
+			ltime = ltime + ltmp*1000;
+			ltmp = data8[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			ltime = ltime + ltmp*1000;
+			ltmp = data8[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			ltime = ltime + ltmp*1000;
 
-		trig_timel = data8[ibunch][11] & 0xFF;
+			trig_timel = data8[ibunch][11] & 0xFF;
 
-		ltmp = data8[ibunch][12] & 0xFF;
-		trig_timeh = ltmp;
-		ltmp = data8[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		trig_timeh = trig_timeh + ltmp;
-		ltmp = data8[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		trig_timeh = trig_timeh + ltmp;
+			ltmp = data8[ibunch][12] & 0xFF;
+			trig_timeh = ltmp;
+			ltmp = data8[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			trig_timeh = trig_timeh + ltmp;
+			ltmp = data8[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			trig_timeh = trig_timeh + ltmp;
 
-		start_timel = data8[ibunch][25] & 0xFF;
+			start_timel = data8[ibunch][25] & 0xFF;
 
-		ltmp = data8[ibunch][26] & 0xFF;
-		start_timeh = ltmp;
-		ltmp = data8[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		start_timeh = start_timeh + ltmp;
-		ltmp = data8[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		start_timeh = start_timeh + ltmp;
-		hist_point = (data_length - 32)/2;
-		hist_range = hist_point * 2;
-		gSystem->ProcessEvents();
-		if (adcflag == 1)	DrawADCInfo(1024, ibunch);
-		gSystem->ProcessEvents();
+			ltmp = data8[ibunch][26] & 0xFF;
+			start_timeh = ltmp;
+			ltmp = data8[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			start_timeh = start_timeh + ltmp;
+			ltmp = data8[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			start_timeh = start_timeh + ltmp;
+			hist_point = (data_length - 32)/2;
+			hist_range = hist_point * 2;
+			gSystem->ProcessEvents();
+			if (adcflag == 1)	DrawADCInfo(1024, ibunch);
+			gSystem->ProcessEvents();
 
-		if (tdcflag == 1)	DrawTDCInfo(1024, ibunch);
-		gSystem->ProcessEvents();
-		printf("module ID = %d, channel ID = %d\n", mid, channel);
-		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
-		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
-		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
-		printf("-------------------------------------------------------------------------------------------------------\n");
-		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-
+			if (tdcflag == 1)	DrawTDCInfo(1024, ibunch);
+			gSystem->ProcessEvents();
+			printf("module ID = %d, channel ID = %d\n", mid, channel);
+			printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
+			printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
+			printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
+			printf("-------------------------------------------------------------------------------------------------------\n");
+			fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+		}
 	}
 
 	gSystem->ProcessEvents();
@@ -979,111 +990,113 @@ void FADC500run::Data16(int &sid)
 
 		fwrite(data16[ibunch], 1, 2048, fp);
 
-		data_length =  data16[ibunch][0] & 0xFF;
-		itmp = data16[ibunch][1] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 8);
-		itmp = data16[ibunch][2] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 16);
-		itmp = data16[ibunch][3] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 24);
+		if (printoutflag == 1)
+		{
+			data_length =  data16[ibunch][0] & 0xFF;
+			itmp = data16[ibunch][1] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 8);
+			itmp = data16[ibunch][2] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 16);
+			itmp = data16[ibunch][3] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 24);
 
-		run_number = data16[ibunch][4] & 0xFF;
-		itmp = data16[ibunch][5] & 0xFF;
-		run_number = run_number + (unsigned int)(itmp << 8);
+			run_number = data16[ibunch][4] & 0xFF;
+			itmp = data16[ibunch][5] & 0xFF;
+			run_number = run_number + (unsigned int)(itmp << 8);
 
-		trigger_type = data16[ibunch][6] & 0x0F;
+			trigger_type = data16[ibunch][6] & 0x0F;
 
-		itmp = data16[ibunch][6] & 0xF0;
-		trigger_destination = itmp >> 4;
+			itmp = data16[ibunch][6] & 0xF0;
+			trigger_destination = itmp >> 4;
 
-		trigger_number = data16[ibunch][7] & 0xFF;
-		itmp = data16[ibunch][8] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 8);
-		itmp = data16[ibunch][9] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 16);
-		itmp = data16[ibunch][10] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 24);					
+			trigger_number = data16[ibunch][7] & 0xFF;
+			itmp = data16[ibunch][8] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 8);
+			itmp = data16[ibunch][9] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 16);
+			itmp = data16[ibunch][10] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 24);					
 
-		ttime = data16[ibunch][11] & 0xFF;
-		ttime = ttime*8;
+			ttime = data16[ibunch][11] & 0xFF;
+			ttime = ttime*8;
 
-		ltmp = data16[ibunch][12] & 0xFF;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data16[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data16[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		ttime = ttime + ltmp * 1000;
+			ltmp = data16[ibunch][12] & 0xFF;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data16[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data16[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			ttime = ttime + ltmp * 1000;
 
-		mid = data16[ibunch][15] & 0xFF;
+			mid = data16[ibunch][15] & 0xFF;
 
-		channel = data16[ibunch][16] & 0xFF;
+			channel = data16[ibunch][16] & 0xFF;
 
-		local_tnum = data16[ibunch][17] & 0xFF;
-		itmp = data16[ibunch][18] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 8);
-		itmp = data16[ibunch][19] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 16);
-		itmp = data16[ibunch][20] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 24);
+			local_tnum = data16[ibunch][17] & 0xFF;
+			itmp = data16[ibunch][18] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 8);
+			itmp = data16[ibunch][19] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 16);
+			itmp = data16[ibunch][20] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 24);
 
-		trigger_pattern = data16[ibunch][21] & 0xFF;
-		itmp = data16[ibunch][22] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
-		itmp = data16[ibunch][23] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
-		itmp = data16[ibunch][24] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
+			trigger_pattern = data16[ibunch][21] & 0xFF;
+			itmp = data16[ibunch][22] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
+			itmp = data16[ibunch][23] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
+			itmp = data16[ibunch][24] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
 
-		ltime = data16[ibunch][25] & 0xFF;
-		ltime = ltime*8;
+			ltime = data16[ibunch][25] & 0xFF;
+			ltime = ltime*8;
 
-		ltmp = data16[ibunch][26] & 0xFF;
-		ltime = ltime + ltmp*1000;
-		ltmp = data16[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		ltime = ltime + ltmp*1000;
-		ltmp = data16[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		ltime = ltime + ltmp*1000;
+			ltmp = data16[ibunch][26] & 0xFF;
+			ltime = ltime + ltmp*1000;
+			ltmp = data16[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			ltime = ltime + ltmp*1000;
+			ltmp = data16[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			ltime = ltime + ltmp*1000;
 
-		trig_timel = data16[ibunch][11] & 0xFF;
+			trig_timel = data16[ibunch][11] & 0xFF;
 
-		ltmp = data16[ibunch][12] & 0xFF;
-		trig_timeh = ltmp;
-		ltmp = data16[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		trig_timeh = trig_timeh + ltmp;
-		ltmp = data16[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		trig_timeh = trig_timeh + ltmp;
+			ltmp = data16[ibunch][12] & 0xFF;
+			trig_timeh = ltmp;
+			ltmp = data16[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			trig_timeh = trig_timeh + ltmp;
+			ltmp = data16[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			trig_timeh = trig_timeh + ltmp;
 
-		start_timel = data16[ibunch][25] & 0xFF;
+			start_timel = data16[ibunch][25] & 0xFF;
 
-		ltmp = data16[ibunch][26] & 0xFF;
-		start_timeh = ltmp;
-		ltmp = data16[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		start_timeh = start_timeh + ltmp;
-		ltmp = data16[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		start_timeh = start_timeh + ltmp;
-		hist_point = (data_length - 32)/2;
-		hist_range = hist_point * 2;
-		gSystem->ProcessEvents();
-		if (adcflag == 1)	DrawADCInfo(2048, ibunch);
-		gSystem->ProcessEvents();
+			ltmp = data16[ibunch][26] & 0xFF;
+			start_timeh = ltmp;
+			ltmp = data16[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			start_timeh = start_timeh + ltmp;
+			ltmp = data16[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			start_timeh = start_timeh + ltmp;
+			hist_point = (data_length - 32)/2;
+			hist_range = hist_point * 2;
+			gSystem->ProcessEvents();
+			if (adcflag == 1)	DrawADCInfo(2048, ibunch);
+			gSystem->ProcessEvents();
 
-		if (tdcflag == 1)	DrawTDCInfo(2048, ibunch);
-		gSystem->ProcessEvents();
-		printf("module ID = %d, channel ID = %d\n", mid, channel);
-		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
-		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
-		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
-		printf("-------------------------------------------------------------------------------------------------------\n");
-		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-
+			if (tdcflag == 1)	DrawTDCInfo(2048, ibunch);
+			gSystem->ProcessEvents();
+			printf("module ID = %d, channel ID = %d\n", mid, channel);
+			printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
+			printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
+			printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
+			printf("-------------------------------------------------------------------------------------------------------\n");
+			fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+		}
 	}
 
 	gSystem->ProcessEvents();
@@ -1104,111 +1117,113 @@ void FADC500run::Data32(int &sid)
 
 		fwrite(data32[ibunch], 1, 4096, fp);
 
-		data_length =  data32[ibunch][0] & 0xFF;
-		itmp = data32[ibunch][1] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 8);
-		itmp = data32[ibunch][2] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 16);
-		itmp = data32[ibunch][3] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 24);
+		if (printoutflag == 1)
+		{
+			data_length =  data32[ibunch][0] & 0xFF;
+			itmp = data32[ibunch][1] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 8);
+			itmp = data32[ibunch][2] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 16);
+			itmp = data32[ibunch][3] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 24);
 
-		run_number = data32[ibunch][4] & 0xFF;
-		itmp = data32[ibunch][5] & 0xFF;
-		run_number = run_number + (unsigned int)(itmp << 8);
+			run_number = data32[ibunch][4] & 0xFF;
+			itmp = data32[ibunch][5] & 0xFF;
+			run_number = run_number + (unsigned int)(itmp << 8);
 
-		trigger_type = data32[ibunch][6] & 0x0F;
+			trigger_type = data32[ibunch][6] & 0x0F;
 
-		itmp = data32[ibunch][6] & 0xF0;
-		trigger_destination = itmp >> 4;
+			itmp = data32[ibunch][6] & 0xF0;
+			trigger_destination = itmp >> 4;
 
-		trigger_number = data32[ibunch][7] & 0xFF;
-		itmp = data32[ibunch][8] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 8);
-		itmp = data32[ibunch][9] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 16);
-		itmp = data32[ibunch][10] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 24);					
+			trigger_number = data32[ibunch][7] & 0xFF;
+			itmp = data32[ibunch][8] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 8);
+			itmp = data32[ibunch][9] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 16);
+			itmp = data32[ibunch][10] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 24);					
 
-		ttime = data32[ibunch][11] & 0xFF;
-		ttime = ttime*8;
+			ttime = data32[ibunch][11] & 0xFF;
+			ttime = ttime*8;
 
-		ltmp = data32[ibunch][12] & 0xFF;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data32[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data32[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		ttime = ttime + ltmp * 1000;
+			ltmp = data32[ibunch][12] & 0xFF;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data32[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data32[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			ttime = ttime + ltmp * 1000;
 
-		mid = data32[ibunch][15] & 0xFF;
+			mid = data32[ibunch][15] & 0xFF;
 
-		channel = data32[ibunch][16] & 0xFF;
+			channel = data32[ibunch][16] & 0xFF;
 
-		local_tnum = data32[ibunch][17] & 0xFF;
-		itmp = data32[ibunch][18] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 8);
-		itmp = data32[ibunch][19] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 16);
-		itmp = data32[ibunch][20] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 24);
+			local_tnum = data32[ibunch][17] & 0xFF;
+			itmp = data32[ibunch][18] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 8);
+			itmp = data32[ibunch][19] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 16);
+			itmp = data32[ibunch][20] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 24);
 
-		trigger_pattern = data32[ibunch][21] & 0xFF;
-		itmp = data32[ibunch][22] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
-		itmp = data32[ibunch][23] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
-		itmp = data32[ibunch][24] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
+			trigger_pattern = data32[ibunch][21] & 0xFF;
+			itmp = data32[ibunch][22] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
+			itmp = data32[ibunch][23] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
+			itmp = data32[ibunch][24] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
 
-		ltime = data32[ibunch][25] & 0xFF;
-		ltime = ltime*8;
+			ltime = data32[ibunch][25] & 0xFF;
+			ltime = ltime*8;
 
-		ltmp = data32[ibunch][26] & 0xFF;
-		ltime = ltime + ltmp*1000;
-		ltmp = data32[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		ltime = ltime + ltmp*1000;
-		ltmp = data32[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		ltime = ltime + ltmp*1000;
+			ltmp = data32[ibunch][26] & 0xFF;
+			ltime = ltime + ltmp*1000;
+			ltmp = data32[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			ltime = ltime + ltmp*1000;
+			ltmp = data32[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			ltime = ltime + ltmp*1000;
 
-		trig_timel = data32[ibunch][11] & 0xFF;
+			trig_timel = data32[ibunch][11] & 0xFF;
 
-		ltmp = data32[ibunch][12] & 0xFF;
-		trig_timeh = ltmp;
-		ltmp = data32[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		trig_timeh = trig_timeh + ltmp;
-		ltmp = data32[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		trig_timeh = trig_timeh + ltmp;
+			ltmp = data32[ibunch][12] & 0xFF;
+			trig_timeh = ltmp;
+			ltmp = data32[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			trig_timeh = trig_timeh + ltmp;
+			ltmp = data32[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			trig_timeh = trig_timeh + ltmp;
 
-		start_timel = data32[ibunch][25] & 0xFF;
+			start_timel = data32[ibunch][25] & 0xFF;
 
-		ltmp = data32[ibunch][26] & 0xFF;
-		start_timeh = ltmp;
-		ltmp = data32[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		start_timeh = start_timeh + ltmp;
-		ltmp = data32[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		start_timeh = start_timeh + ltmp;
-		hist_point = (data_length - 32)/2;
-		hist_range = hist_point * 2;
-		gSystem->ProcessEvents();
-		if (adcflag == 1)	DrawADCInfo(4096, ibunch);
-		gSystem->ProcessEvents();
+			ltmp = data32[ibunch][26] & 0xFF;
+			start_timeh = ltmp;
+			ltmp = data32[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			start_timeh = start_timeh + ltmp;
+			ltmp = data32[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			start_timeh = start_timeh + ltmp;
+			hist_point = (data_length - 32)/2;
+			hist_range = hist_point * 2;
+			gSystem->ProcessEvents();
+			if (adcflag == 1)	DrawADCInfo(4096, ibunch);
+			gSystem->ProcessEvents();
 
-		if (tdcflag == 1)	DrawTDCInfo(4096, ibunch);
-		gSystem->ProcessEvents();
-		printf("module ID = %d, channel ID = %d\n", mid, channel);
-		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
-		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
-		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
-		printf("-------------------------------------------------------------------------------------------------------\n");
-		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-
+			if (tdcflag == 1)	DrawTDCInfo(4096, ibunch);
+			gSystem->ProcessEvents();
+			printf("module ID = %d, channel ID = %d\n", mid, channel);
+			printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
+			printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
+			printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
+			printf("-------------------------------------------------------------------------------------------------------\n");
+			fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+		}
 	}
 
 	gSystem->ProcessEvents();
@@ -1229,110 +1244,113 @@ void FADC500run::Data64(int &sid)
 
 		fwrite(data64[ibunch], 1, 8192, fp);
 
-		data_length =  data64[ibunch][0] & 0xFF;
-		itmp = data64[ibunch][1] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 8);
-		itmp = data64[ibunch][2] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 16);
-		itmp = data64[ibunch][3] & 0xFF;
-		data_length = data_length + (unsigned int)(itmp << 24);
+		if (printoutflag == 1)
+		{
+			data_length =  data64[ibunch][0] & 0xFF;
+			itmp = data64[ibunch][1] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 8);
+			itmp = data64[ibunch][2] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 16);
+			itmp = data64[ibunch][3] & 0xFF;
+			data_length = data_length + (unsigned int)(itmp << 24);
 
-		run_number = data64[ibunch][4] & 0xFF;
-		itmp = data64[ibunch][5] & 0xFF;
-		run_number = run_number + (unsigned int)(itmp << 8);
+			run_number = data64[ibunch][4] & 0xFF;
+			itmp = data64[ibunch][5] & 0xFF;
+			run_number = run_number + (unsigned int)(itmp << 8);
 
-		trigger_type = data64[ibunch][6] & 0x0F;
+			trigger_type = data64[ibunch][6] & 0x0F;
 
-		itmp = data64[ibunch][6] & 0xF0;
-		trigger_destination = itmp >> 4;
+			itmp = data64[ibunch][6] & 0xF0;
+			trigger_destination = itmp >> 4;
 
-		trigger_number = data64[ibunch][7] & 0xFF;
-		itmp = data64[ibunch][8] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 8);
-		itmp = data64[ibunch][9] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 16);
-		itmp = data64[ibunch][10] & 0xFF;
-		trigger_number = trigger_number + (unsigned int)(itmp << 24);					
+			trigger_number = data64[ibunch][7] & 0xFF;
+			itmp = data64[ibunch][8] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 8);
+			itmp = data64[ibunch][9] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 16);
+			itmp = data64[ibunch][10] & 0xFF;
+			trigger_number = trigger_number + (unsigned int)(itmp << 24);					
 
-		ttime = data64[ibunch][11] & 0xFF;
-		ttime = ttime*8;
+			ttime = data64[ibunch][11] & 0xFF;
+			ttime = ttime*8;
 
-		ltmp = data64[ibunch][12] & 0xFF;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data64[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		ttime = ttime + ltmp * 1000;
-		ltmp = data64[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		ttime = ttime + ltmp * 1000;
+			ltmp = data64[ibunch][12] & 0xFF;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data64[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			ttime = ttime + ltmp * 1000;
+			ltmp = data64[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			ttime = ttime + ltmp * 1000;
 
-		mid = data64[ibunch][15] & 0xFF;
+			mid = data64[ibunch][15] & 0xFF;
 
-		channel = data64[ibunch][16] & 0xFF;
+			channel = data64[ibunch][16] & 0xFF;
 
-		local_tnum = data64[ibunch][17] & 0xFF;
-		itmp = data64[ibunch][18] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 8);
-		itmp = data64[ibunch][19] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 16);
-		itmp = data64[ibunch][20] & 0xFF;
-		local_tnum = local_tnum + (unsigned int)(itmp << 24);
+			local_tnum = data64[ibunch][17] & 0xFF;
+			itmp = data64[ibunch][18] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 8);
+			itmp = data64[ibunch][19] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 16);
+			itmp = data64[ibunch][20] & 0xFF;
+			local_tnum = local_tnum + (unsigned int)(itmp << 24);
 
-		trigger_pattern = data64[ibunch][21] & 0xFF;
-		itmp = data64[ibunch][22] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
-		itmp = data64[ibunch][23] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
-		itmp = data64[ibunch][24] & 0xFF;
-		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
+			trigger_pattern = data64[ibunch][21] & 0xFF;
+			itmp = data64[ibunch][22] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
+			itmp = data64[ibunch][23] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
+			itmp = data64[ibunch][24] & 0xFF;
+			trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
 
-		ltime = data64[ibunch][25] & 0xFF;
-		ltime = ltime*8;
+			ltime = data64[ibunch][25] & 0xFF;
+			ltime = ltime*8;
 
-		ltmp = data64[ibunch][26] & 0xFF;
-		ltime = ltime + ltmp*1000;
-		ltmp = data64[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		ltime = ltime + ltmp*1000;
-		ltmp = data64[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		ltime = ltime + ltmp*1000;
+			ltmp = data64[ibunch][26] & 0xFF;
+			ltime = ltime + ltmp*1000;
+			ltmp = data64[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			ltime = ltime + ltmp*1000;
+			ltmp = data64[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			ltime = ltime + ltmp*1000;
 
-		trig_timel = data64[ibunch][11] & 0xFF;
+			trig_timel = data64[ibunch][11] & 0xFF;
 
-		ltmp = data64[ibunch][12] & 0xFF;
-		trig_timeh = ltmp;
-		ltmp = data64[ibunch][13] & 0xFF;
-		ltmp = ltmp << 8;
-		trig_timeh = trig_timeh + ltmp;
-		ltmp = data64[ibunch][14] & 0xFF;
-		ltmp = ltmp << 16;
-		trig_timeh = trig_timeh + ltmp;
+			ltmp = data64[ibunch][12] & 0xFF;
+			trig_timeh = ltmp;
+			ltmp = data64[ibunch][13] & 0xFF;
+			ltmp = ltmp << 8;
+			trig_timeh = trig_timeh + ltmp;
+			ltmp = data64[ibunch][14] & 0xFF;
+			ltmp = ltmp << 16;
+			trig_timeh = trig_timeh + ltmp;
 
-		start_timel = data64[ibunch][25] & 0xFF;
+			start_timel = data64[ibunch][25] & 0xFF;
 
-		ltmp = data64[ibunch][26] & 0xFF;
-		start_timeh = ltmp;
-		ltmp = data64[ibunch][27] & 0xFF;
-		ltmp = ltmp << 8;
-		start_timeh = start_timeh + ltmp;
-		ltmp = data64[ibunch][28] & 0xFF;
-		ltmp = ltmp << 16;
-		start_timeh = start_timeh + ltmp;
-		hist_point = (data_length - 32)/2;
-		hist_range = hist_point * 2;
-		gSystem->ProcessEvents();
-		if (adcflag == 1)	DrawADCInfo(8192, ibunch);
-		gSystem->ProcessEvents();
+			ltmp = data64[ibunch][26] & 0xFF;
+			start_timeh = ltmp;
+			ltmp = data64[ibunch][27] & 0xFF;
+			ltmp = ltmp << 8;
+			start_timeh = start_timeh + ltmp;
+			ltmp = data64[ibunch][28] & 0xFF;
+			ltmp = ltmp << 16;
+			start_timeh = start_timeh + ltmp;
+			hist_point = (data_length - 32)/2;
+			hist_range = hist_point * 2;
+			gSystem->ProcessEvents();
+			if (adcflag == 1)	DrawADCInfo(8192, ibunch);
+			gSystem->ProcessEvents();
 
-		if (tdcflag == 1)	DrawTDCInfo(8192, ibunch);
-		gSystem->ProcessEvents();
-		printf("module ID = %d, channel ID = %d\n", mid, channel);
-		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
-		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
-		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
-		printf("-------------------------------------------------------------------------------------------------------\n");
-		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+			if (tdcflag == 1)	DrawTDCInfo(8192, ibunch);
+			gSystem->ProcessEvents();
+			printf("module ID = %d, channel ID = %d\n", mid, channel);
+			printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
+			printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
+			printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
+			printf("-------------------------------------------------------------------------------------------------------\n");
+			fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+		}
 
 	}
 
@@ -1348,111 +1366,113 @@ void FADC500run::Data128(int &sid)
 
 	gSystem->ProcessEvents();
 
-	data_length =  data128[0] & 0xFF;
-	itmp = data128[1] & 0xFF;
-	data_length = data_length + (unsigned int)(itmp << 8);
-	itmp = data128[2] & 0xFF;
-	data_length = data_length + (unsigned int)(itmp << 16);
-	itmp = data128[3] & 0xFF;
-	data_length = data_length + (unsigned int)(itmp << 24);
+	if (printoutflag == 1)
+	{
+		data_length =  data128[0] & 0xFF;
+		itmp = data128[1] & 0xFF;
+		data_length = data_length + (unsigned int)(itmp << 8);
+		itmp = data128[2] & 0xFF;
+		data_length = data_length + (unsigned int)(itmp << 16);
+		itmp = data128[3] & 0xFF;
+		data_length = data_length + (unsigned int)(itmp << 24);
 
-	run_number = data128[4] & 0xFF;
-	itmp = data128[5] & 0xFF;
-	run_number = run_number + (unsigned int)(itmp << 8);
+		run_number = data128[4] & 0xFF;
+		itmp = data128[5] & 0xFF;
+		run_number = run_number + (unsigned int)(itmp << 8);
 
-	trigger_type = data128[6] & 0x0F;
+		trigger_type = data128[6] & 0x0F;
 
-	itmp = data128[6] & 0xF0;
-	trigger_destination = itmp >> 4;
+		itmp = data128[6] & 0xF0;
+		trigger_destination = itmp >> 4;
 
-	trigger_number = data128[7] & 0xFF;
-	itmp = data128[8] & 0xFF;
-	trigger_number = trigger_number + (unsigned int)(itmp << 8);
-	itmp = data128[9] & 0xFF;
-	trigger_number = trigger_number + (unsigned int)(itmp << 16);
-	itmp = data128[10] & 0xFF;
-	trigger_number = trigger_number + (unsigned int)(itmp << 24);					
+		trigger_number = data128[7] & 0xFF;
+		itmp = data128[8] & 0xFF;
+		trigger_number = trigger_number + (unsigned int)(itmp << 8);
+		itmp = data128[9] & 0xFF;
+		trigger_number = trigger_number + (unsigned int)(itmp << 16);
+		itmp = data128[10] & 0xFF;
+		trigger_number = trigger_number + (unsigned int)(itmp << 24);					
 
-	ttime = data128[11] & 0xFF;
-	ttime = ttime*8;
+		ttime = data128[11] & 0xFF;
+		ttime = ttime*8;
 
-	ltmp = data128[12] & 0xFF;
-	ttime = ttime + ltmp * 1000;
-	ltmp = data128[13] & 0xFF;
-	ltmp = ltmp << 8;
-	ttime = ttime + ltmp * 1000;
-	ltmp = data128[14] & 0xFF;
-	ltmp = ltmp << 16;
-	ttime = ttime + ltmp * 1000;
+		ltmp = data128[12] & 0xFF;
+		ttime = ttime + ltmp * 1000;
+		ltmp = data128[13] & 0xFF;
+		ltmp = ltmp << 8;
+		ttime = ttime + ltmp * 1000;
+		ltmp = data128[14] & 0xFF;
+		ltmp = ltmp << 16;
+		ttime = ttime + ltmp * 1000;
 
-	mid = data128[15] & 0xFF;
+		mid = data128[15] & 0xFF;
 
-	channel = data128[16] & 0xFF;
+		channel = data128[16] & 0xFF;
 
-	local_tnum = data128[17] & 0xFF;
-	itmp = data128[18] & 0xFF;
-	local_tnum = local_tnum + (unsigned int)(itmp << 8);
-	itmp = data128[19] & 0xFF;
-	local_tnum = local_tnum + (unsigned int)(itmp << 16);
-	itmp = data128[20] & 0xFF;
-	local_tnum = local_tnum + (unsigned int)(itmp << 24);
+		local_tnum = data128[17] & 0xFF;
+		itmp = data128[18] & 0xFF;
+		local_tnum = local_tnum + (unsigned int)(itmp << 8);
+		itmp = data128[19] & 0xFF;
+		local_tnum = local_tnum + (unsigned int)(itmp << 16);
+		itmp = data128[20] & 0xFF;
+		local_tnum = local_tnum + (unsigned int)(itmp << 24);
 
-	trigger_pattern = data128[21] & 0xFF;
-	itmp = data128[22] & 0xFF;
-	trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
-	itmp = data128[23] & 0xFF;
-	trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
-	itmp = data128[24] & 0xFF;
-	trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
+		trigger_pattern = data128[21] & 0xFF;
+		itmp = data128[22] & 0xFF;
+		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
+		itmp = data128[23] & 0xFF;
+		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
+		itmp = data128[24] & 0xFF;
+		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
 
-	ltime = data128[25] & 0xFF;
-	ltime = ltime*8;
+		ltime = data128[25] & 0xFF;
+		ltime = ltime*8;
 
-	ltmp = data128[26] & 0xFF;
-	ltime = ltime + ltmp*1000;
-	ltmp = data128[27] & 0xFF;
-	ltmp = ltmp << 8;
-	ltime = ltime + ltmp*1000;
-	ltmp = data128[28] & 0xFF;
-	ltmp = ltmp << 16;
-	ltime = ltime + ltmp*1000;
+		ltmp = data128[26] & 0xFF;
+		ltime = ltime + ltmp*1000;
+		ltmp = data128[27] & 0xFF;
+		ltmp = ltmp << 8;
+		ltime = ltime + ltmp*1000;
+		ltmp = data128[28] & 0xFF;
+		ltmp = ltmp << 16;
+		ltime = ltime + ltmp*1000;
 
-	trig_timel = data128[11] & 0xFF;
+		trig_timel = data128[11] & 0xFF;
 
-	ltmp = data128[12] & 0xFF;
-	trig_timeh = ltmp;
-	ltmp = data128[13] & 0xFF;
-	ltmp = ltmp << 8;
-	trig_timeh = trig_timeh + ltmp;
-	ltmp = data128[14] & 0xFF;
-	ltmp = ltmp << 16;
-	trig_timeh = trig_timeh + ltmp;
+		ltmp = data128[12] & 0xFF;
+		trig_timeh = ltmp;
+		ltmp = data128[13] & 0xFF;
+		ltmp = ltmp << 8;
+		trig_timeh = trig_timeh + ltmp;
+		ltmp = data128[14] & 0xFF;
+		ltmp = ltmp << 16;
+		trig_timeh = trig_timeh + ltmp;
 
-	start_timel = data128[25] & 0xFF;
+		start_timel = data128[25] & 0xFF;
 
-	ltmp = data128[26] & 0xFF;
-	start_timeh = ltmp;
-	ltmp = data128[27] & 0xFF;
-	ltmp = ltmp << 8;
-	start_timeh = start_timeh + ltmp;
-	ltmp = data128[28] & 0xFF;
-	ltmp = ltmp << 16;
-	start_timeh = start_timeh + ltmp;
-	hist_point = (data_length - 32)/2;
-	hist_range = hist_point * 2;
-	gSystem->ProcessEvents();
-	if (adcflag == 1)	DrawADCInfo(16384, 0);
-	gSystem->ProcessEvents();
+		ltmp = data128[26] & 0xFF;
+		start_timeh = ltmp;
+		ltmp = data128[27] & 0xFF;
+		ltmp = ltmp << 8;
+		start_timeh = start_timeh + ltmp;
+		ltmp = data128[28] & 0xFF;
+		ltmp = ltmp << 16;
+		start_timeh = start_timeh + ltmp;
+		hist_point = (data_length - 32)/2;
+		hist_range = hist_point * 2;
+		gSystem->ProcessEvents();
+		if (adcflag == 1)	DrawADCInfo(16384, 0);
+		gSystem->ProcessEvents();
 
-	if (tdcflag == 1)	DrawTDCInfo(16384, 0);
-	gSystem->ProcessEvents();
-	printf("module ID = %d, channel ID = %d\n", mid, channel);
-	printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
-	printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
-	printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
-	printf("-------------------------------------------------------------------------------------------------------\n");
-	fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
-
+		if (tdcflag == 1)	DrawTDCInfo(16384, 0);
+		gSystem->ProcessEvents();
+		printf("module ID = %d, channel ID = %d\n", mid, channel);
+		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
+		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
+		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
+		printf("-------------------------------------------------------------------------------------------------------\n");
+		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+	}
 
 
 }
@@ -1465,108 +1485,111 @@ void FADC500run::Data256(int &sid)
 
 	gSystem->ProcessEvents();
 
-	data_length =  data256[0] & 0xFF;
-	itmp = data256[1] & 0xFF;
-	data_length = data_length + (unsigned int)(itmp << 8);
-	itmp = data256[2] & 0xFF;
-	data_length = data_length + (unsigned int)(itmp << 16);
-	itmp = data256[3] & 0xFF;
-	data_length = data_length + (unsigned int)(itmp << 24);
+	if (printoutflag == 1)
+	{
+		data_length =  data256[0] & 0xFF;
+		itmp = data256[1] & 0xFF;
+		data_length = data_length + (unsigned int)(itmp << 8);
+		itmp = data256[2] & 0xFF;
+		data_length = data_length + (unsigned int)(itmp << 16);
+		itmp = data256[3] & 0xFF;
+		data_length = data_length + (unsigned int)(itmp << 24);
 
-	run_number = data256[4] & 0xFF;
-	itmp = data256[5] & 0xFF;
-	run_number = run_number + (unsigned int)(itmp << 8);
+		run_number = data256[4] & 0xFF;
+		itmp = data256[5] & 0xFF;
+		run_number = run_number + (unsigned int)(itmp << 8);
 
-	trigger_type = data256[6] & 0x0F;
+		trigger_type = data256[6] & 0x0F;
 
-	itmp = data256[6] & 0xF0;
-	trigger_destination = itmp >> 4;
+		itmp = data256[6] & 0xF0;
+		trigger_destination = itmp >> 4;
 
-	trigger_number = data256[7] & 0xFF;
-	itmp = data256[8] & 0xFF;
-	trigger_number = trigger_number + (unsigned int)(itmp << 8);
-	itmp = data256[9] & 0xFF;
-	trigger_number = trigger_number + (unsigned int)(itmp << 16);
-	itmp = data256[10] & 0xFF;
-	trigger_number = trigger_number + (unsigned int)(itmp << 24);					
+		trigger_number = data256[7] & 0xFF;
+		itmp = data256[8] & 0xFF;
+		trigger_number = trigger_number + (unsigned int)(itmp << 8);
+		itmp = data256[9] & 0xFF;
+		trigger_number = trigger_number + (unsigned int)(itmp << 16);
+		itmp = data256[10] & 0xFF;
+		trigger_number = trigger_number + (unsigned int)(itmp << 24);					
 
-	ttime = data256[11] & 0xFF;
-	ttime = ttime*8;
+		ttime = data256[11] & 0xFF;
+		ttime = ttime*8;
 
-	ltmp = data256[12] & 0xFF;
-	ttime = ttime + ltmp * 1000;
-	ltmp = data256[13] & 0xFF;
-	ltmp = ltmp << 8;
-	ttime = ttime + ltmp * 1000;
-	ltmp = data256[14] & 0xFF;
-	ltmp = ltmp << 16;
-	ttime = ttime + ltmp * 1000;
+		ltmp = data256[12] & 0xFF;
+		ttime = ttime + ltmp * 1000;
+		ltmp = data256[13] & 0xFF;
+		ltmp = ltmp << 8;
+		ttime = ttime + ltmp * 1000;
+		ltmp = data256[14] & 0xFF;
+		ltmp = ltmp << 16;
+		ttime = ttime + ltmp * 1000;
 
-	mid = data256[15] & 0xFF;
+		mid = data256[15] & 0xFF;
 
-	channel = data256[16] & 0xFF;
+		channel = data256[16] & 0xFF;
 
-	local_tnum = data256[17] & 0xFF;
-	itmp = data256[18] & 0xFF;
-	local_tnum = local_tnum + (unsigned int)(itmp << 8);
-	itmp = data256[19] & 0xFF;
-	local_tnum = local_tnum + (unsigned int)(itmp << 16);
-	itmp = data256[20] & 0xFF;
-	local_tnum = local_tnum + (unsigned int)(itmp << 24);
+		local_tnum = data256[17] & 0xFF;
+		itmp = data256[18] & 0xFF;
+		local_tnum = local_tnum + (unsigned int)(itmp << 8);
+		itmp = data256[19] & 0xFF;
+		local_tnum = local_tnum + (unsigned int)(itmp << 16);
+		itmp = data256[20] & 0xFF;
+		local_tnum = local_tnum + (unsigned int)(itmp << 24);
 
-	trigger_pattern = data256[21] & 0xFF;
-	itmp = data256[22] & 0xFF;
-	trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
-	itmp = data256[23] & 0xFF;
-	trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
-	itmp = data256[24] & 0xFF;
-	trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
+		trigger_pattern = data256[21] & 0xFF;
+		itmp = data256[22] & 0xFF;
+		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 8);
+		itmp = data256[23] & 0xFF;
+		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 16);
+		itmp = data256[24] & 0xFF;
+		trigger_pattern = trigger_pattern + (unsigned int)(itmp << 24);
 
-	ltime = data256[25] & 0xFF;
-	ltime = ltime*8;
+		ltime = data256[25] & 0xFF;
+		ltime = ltime*8;
 
-	ltmp = data256[26] & 0xFF;
-	ltime = ltime + ltmp*1000;
-	ltmp = data256[27] & 0xFF;
-	ltmp = ltmp << 8;
-	ltime = ltime + ltmp*1000;
-	ltmp = data256[28] & 0xFF;
-	ltmp = ltmp << 16;
-	ltime = ltime + ltmp*1000;
+		ltmp = data256[26] & 0xFF;
+		ltime = ltime + ltmp*1000;
+		ltmp = data256[27] & 0xFF;
+		ltmp = ltmp << 8;
+		ltime = ltime + ltmp*1000;
+		ltmp = data256[28] & 0xFF;
+		ltmp = ltmp << 16;
+		ltime = ltime + ltmp*1000;
 
-	trig_timel = data256[11] & 0xFF;
+		trig_timel = data256[11] & 0xFF;
 
-	ltmp = data256[12] & 0xFF;
-	trig_timeh = ltmp;
-	ltmp = data256[13] & 0xFF;
-	ltmp = ltmp << 8;
-	trig_timeh = trig_timeh + ltmp;
-	ltmp = data256[14] & 0xFF;
-	ltmp = ltmp << 16;
-	trig_timeh = trig_timeh + ltmp;
+		ltmp = data256[12] & 0xFF;
+		trig_timeh = ltmp;
+		ltmp = data256[13] & 0xFF;
+		ltmp = ltmp << 8;
+		trig_timeh = trig_timeh + ltmp;
+		ltmp = data256[14] & 0xFF;
+		ltmp = ltmp << 16;
+		trig_timeh = trig_timeh + ltmp;
 
-	start_timel = data256[25] & 0xFF;
+		start_timel = data256[25] & 0xFF;
 
-	ltmp = data256[26] & 0xFF;
-	start_timeh = ltmp;
-	ltmp = data256[27] & 0xFF;
-	ltmp = ltmp << 8;
-	start_timeh = start_timeh + ltmp;
-	ltmp = data256[28] & 0xFF;
-	ltmp = ltmp << 16;
-	start_timeh = start_timeh + ltmp;
-	hist_point = (data_length - 32)/2;
-	hist_range = hist_point * 2;
-	gSystem->ProcessEvents();
-	if (adcflag == 1)	DrawADCInfo(32768, 0);
-	gSystem->ProcessEvents();
+		ltmp = data256[26] & 0xFF;
+		start_timeh = ltmp;
+		ltmp = data256[27] & 0xFF;
+		ltmp = ltmp << 8;
+		start_timeh = start_timeh + ltmp;
+		ltmp = data256[28] & 0xFF;
+		ltmp = ltmp << 16;
+		start_timeh = start_timeh + ltmp;
+		hist_point = (data_length - 32)/2;
+		hist_range = hist_point * 2;
+		gSystem->ProcessEvents();
+		if (adcflag == 1)	DrawADCInfo(32768, 0);
+		gSystem->ProcessEvents();
 
-	if (tdcflag == 1)	DrawTDCInfo(32768, 0);
-	gSystem->ProcessEvents();
-	printf("module ID = %d, channel ID = %d\n", mid, channel);
-	printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
-	printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
-	printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
-	printf("-------------------------------------------------------------------------------------------------------\n");
-	fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+		if (tdcflag == 1)	DrawTDCInfo(32768, 0);
+		gSystem->ProcessEvents();
+		printf("module ID = %d, channel ID = %d\n", mid, channel);
+		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
+		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
+		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
+		printf("-------------------------------------------------------------------------------------------------------\n");
+		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
+	}
 }

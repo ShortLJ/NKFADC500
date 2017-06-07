@@ -69,6 +69,7 @@ class FADC500gui
 		int nEvent;
 		int nModule;
 		int tcbflag = 0;
+		int runnumber = 0;
 		TString saveFile;
 		TString directory;
 
@@ -97,12 +98,14 @@ class FADC500gui
 		TGLabel *lPOL;
 		TGLabel *lADCMODE;
 		TGLabel *lFLUSH;
+		TGLabel *lRUNNUM;
 
 		TGNumberEntryField *fNMODULE;
 		TGNumberEntryField *fPTRIGGER;
 		TGNumberEntryField *fNEVENT;
 		TGNumberEntryField *fTRIGDELAY;
 		TGNumberEntryField *fTRIGCOINWIDTH;
+		TGNumberEntryField *fRUNNUM;
 
 		TGNumberEntryField *fCOINWIDTH[6][4];
 		TGNumberEntryField *fADCTHR[6][4];
@@ -167,7 +170,9 @@ class FADC500gui
 		void ADCOff();
 		void TDCOn();
 		void TDCOff();
-
+		void PRINTOn();
+		void PRINTOff();
+		void SetRunNum(char*);
 };
 #endif
 

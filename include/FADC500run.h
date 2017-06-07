@@ -72,6 +72,7 @@ class FADC500run
 		int flag;
 		int adcflag;
 		int tdcflag;
+		int printoutflag;
 		int flush;
 		TCanvas* c1;
 		TCanvas* c2;
