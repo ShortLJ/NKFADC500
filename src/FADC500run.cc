@@ -72,7 +72,7 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 
 			if (bcount > 16)
 			{
-				printf("Module %d DRAM Memory = %ld\n",sid[mid],bcount);
+				printf("Module %d DRAM Memory = %ld\n",sid[imod],bcount);
 				fadc->FADC500IBSread_DATA(sid[imod], 32, data);
 				fwrite(data, 1, 32768, fp);
 				if (printoutflag == 1)	PrintInfo();
@@ -81,10 +81,10 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 
 			if (flag == 0)	break;			
 			gSystem->ProcessEvents();
+			iEvent = iEvent + 32768/datasize[imod];
 
 		}
 
-		iEvent++;
 		gSystem->ProcessEvents();
 
 		if (iEvent >= nEvent*nMod-1)	flag = 0;
@@ -381,14 +381,14 @@ void FADC500run::TakeResidual(const int &nMod)
 
 			if (rcount[imod] > 16)
 			{
-				printf("Module %d residual memory(SMODE) : %d\n", sid[imod], rcount[imod]);
+				printf("Module %d residual memory : %d\n", sid[imod], rcount[imod]);
 				fadc->FADC500IBSread_DATA(sid[imod], 32, data);
 				fwrite(data, 1, 32768, fp);
 				if (printoutflag == 1)	PrintInfo();
 				gSystem->ProcessEvents();
 				rcount[imod] = rcount[imod] - 32;
 			}
-			else	printf("Module %d has been finished.", sid[imod]);
+			else	printf("Module %d has been finished.\n", sid[imod]);
 		}
 		if (rcount[0] < 32)	break;
 	}
