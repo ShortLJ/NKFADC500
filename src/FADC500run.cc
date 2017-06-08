@@ -23,11 +23,6 @@ May. 10. 2017.
 #include "NoticeTCBIBSROOT.h"
 #include "NoticeFADC500IBSROOT.h"
 
-using namespace std;
-#define PC_DRAM     50
-#define MAX_READ    PC_DRAM*1024
-#define ARRAY_SIZE  MAX_READ*1024
-
 
 int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 {
@@ -77,10 +72,9 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 
 			if (bcount > 16)
 			{
-				if (flag == 1) printf("Module %d DRAM Memory = %ld\n",sid[mid],bcount);
-				if (bcount > MAX_READ)	bcount = MAX_READ;
-				fadc->FADC500IBSread_DATA(sid[imod], bcount, data);
-				fwrite(data, 1, bcount*1024, fp);
+				printf("Module %d DRAM Memory = %ld\n",sid[mid],bcount);
+				fadc->FADC500IBSread_DATA(sid[imod], 32, data);
+				fwrite(data, 1, 32768, fp);
 				if (printoutflag == 1)	PrintInfo();
 				gSystem->ProcessEvents();
 			}
@@ -90,10 +84,10 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 
 		}
 
-		iEvent = local_tnum;
+		iEvent++;
 		gSystem->ProcessEvents();
 
-		if (iEvent >= nEvent-1)	flag = 0;
+		if (iEvent >= nEvent*nMod-1)	flag = 0;
 		gSystem->ProcessEvents();
 
 		if (flag == 0)	break;			
@@ -142,7 +136,7 @@ void FADC500run::clearall()
 void FADC500run::PrintInfo()
 {
 	int i = 0;
-	while (i < bcount*1024)
+	while (i < 32768)
 	{
 		data_length =  data[i] & 0xFF;
 		itmp = data[i+1] & 0xFF;
@@ -249,6 +243,11 @@ void FADC500run::PrintInfo()
 		printf("-------------------------------------------------------------------------------------------------------\n");
 		fprintf(lfp, "%lX  %lX  %lX  %lX  %d\n", trig_timel, trig_timeh, start_timel, start_timeh, adc);
 		i = i + data_length;
+
+		if (printoutflag == 0 ) break;
+		gSystem->ProcessEvents();
+		if (flag == 0)  break;
+		gSystem->ProcessEvents();
 	}
 }
 
@@ -367,7 +366,6 @@ void FADC500run::DrawTDCInfo(int i)
 
 void FADC500run::TakeResidual(const int &nMod)
 {
-	vector <int> rcount;
 	for (int imod = 0; imod < nMod; imod++)
 	{
 		rcount.push_back(fadc->FADC500IBSread_BCOUNT(sid[imod]));
@@ -375,28 +373,25 @@ void FADC500run::TakeResidual(const int &nMod)
 	}
 	printf("Start taking residual data\n");
 	gSystem->ProcessEvents();
-	for (int imod = 0; imod < nMod; imod++)
+	
+	while (1)
 	{
-		if (rcount[imod])
+		for (int imod = 0; imod < nMod; imod++)
 		{
-			for (int ircount = 0; ircount < int(rcount[imod]/MAX_READ); ircount++)
-			{ 
-				printf("Module %d residual memory : %d\n", sid[imod], rcount[imod]-ircount*MAX_READ);
-				fadc->FADC500IBSread_DATA(sid[imod], ARRAY_SIZE, data);
-				fwrite(data, 1, ARRAY_SIZE, fp);
-				if (printoutflag == 1)	PrintInfo();
-				gSystem->ProcessEvents();
-			}
 
-			for (int ircount = 0; ircount < int((rcount[imod]%MAX_READ)/32); ircount++)
+			if (rcount[imod] > 16)
 			{
-				printf("Module %d residual memory : %d\n", sid[imod], rcount[imod]-ircount*32);
-				fadc->FADC500IBSread_DATA(sid[imod], 32*1024, data);
-				fwrite(data, 1, 32*1024, fp);
+				printf("Module %d residual memory(SMODE) : %d\n", sid[imod], rcount[imod]);
+				fadc->FADC500IBSread_DATA(sid[imod], 32, data);
+				fwrite(data, 1, 32768, fp);
 				if (printoutflag == 1)	PrintInfo();
 				gSystem->ProcessEvents();
+				rcount[imod] = rcount[imod] - 32;
 			}
+			else	printf("Module %d has been finished.", sid[imod]);
 		}
+		if (rcount[0] < 32)	break;
 	}
+  rcount.clear();
 }
 

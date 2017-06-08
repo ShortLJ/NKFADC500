@@ -19,15 +19,12 @@ May. 10. 2017.
 #include "NoticeFADC500IBSROOT.h"
 #include <vector>
 
-#define PC_DRAM		50
-#define MAX_READ	PC_DRAM*1024
-#define ARRAY_SIZE	MAX_READ*1024
-
 class FADC500run
 {
 	private:
-		unsigned char data[ARRAY_SIZE];
+		unsigned char data[32768];
 		std::vector <int> sid;
+		std::vector <int> rcount;
 		int adc;                         // ADC data
 		int tdc;                         // TDC data
 		int data_length;                 // data length
