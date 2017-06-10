@@ -60,6 +60,8 @@ void FADC500setting::FADC500ParSetting()
 	tcb->TCBIBSwrite_MTHR(sid, mthr);
 	tcb->TCBIBSwrite_PSCALE(sid, pscale);
 	tcb->TCBIBSwrite_CW(sid, 0, 1, cw_tcb);
+	tcb->TCBIBSwrite_RUNNO(sid, run_num);
+	printf("TCBIBS run number = %ld\n", tcb->TCBIBSread_RUNNO(sid));
 	printf("TCBIBS trigger delay = %ld\n", tcb->TCBIBSread_TRIGDLY(sid));
 	printf("TCBIBS pedestal trigger interval = %ld ms\n", tcb->TCBIBSread_PTRIG(sid));
 	printf("TCBIBS multiplicity = %ld\n", tcb->TCBIBSread_MTHR(sid));

@@ -1739,4 +1739,5 @@ void FADC500gui::PRINTOff()
 void FADC500gui::SetRunNum(char* value)
 {
 	runnumber= atoi(value); 
+	fset.run_num = runnumber;
 }

@@ -18,6 +18,7 @@ class FADC500setting
 	public:
 		int module_count;
 		int sid = 0;				//TCB USB3 SID
+		unsigned long run_num;
 		unsigned long mid[40];			//NKFADC500 mid found by TCB
 		unsigned long ptrig_interval;	//pedestal trigger interval in ms, 00 for disable
 		unsigned long rl[6];			//recording length: 1=128ns, 2=256ns, 4=512ns, 8=1us, 16=2us, 32=4us, 64=8us, 128=16us, 256=32us
