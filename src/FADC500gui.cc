@@ -231,6 +231,7 @@ FADC500gui::FADC500gui()
     fRUNNUM->MoveResize(200,130,100,20);
     fCompositeFrame1->AddFrame(fRUNNUM, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
     fRUNNUM -> Connect("TextChanged(const Char_t *)", "FADC500gui", this, "SetRunNum(const Char_t *)");
+    fRUNNUM->SetText(Form("%lu", 1), kFALSE);
 
 
     lTRIGDELAY = new TGLabel(fCompositeFrame1, "Trigger Delay(ns)");
@@ -1662,6 +1663,7 @@ void FADC500gui::SetSame()
 
 void FADC500gui::SetTCB()
 {
+  fset.run_num = runnumber;
 	fset.FADC500ParSetting();
 	for (int i = 0; i < 6; i++)
 	{
@@ -1738,6 +1740,6 @@ void FADC500gui::PRINTOff()
 
 void FADC500gui::SetRunNum(char* value)
 {
-	runnumber= atoi(value); 
-	fset.run_num = runnumber;
+	runnumber= atol(value); 
+  cout << "Run Number : " << runnumber << endl;
 }

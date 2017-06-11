@@ -24,11 +24,11 @@ class FADC500run
 	private:
 		unsigned char data[32768];
 		std::vector <int> sid;
-		std::vector <int> rcount;
+		std::vector <unsigned int> rcount;
 		int adc;                         // ADC data
 		int tdc;                         // TDC data
 		int data_length;                 // data length
-		int run_number;                  // run number
+		unsigned long run_number;                  // run number
 		int trigger_type;                // trigger type
 		int trigger_destination;         // trigger destination
 		int trigger_number;              // trigger number from TCB
@@ -39,7 +39,7 @@ class FADC500run
 		int trigger_pattern;             // trigger pattern from fadc500-ibs
 		unsigned long ltime;             // starting time of waveform
 		unsigned int iEvent;               // event number counter
-		unsigned long bcount;            // buffer counter	
+		unsigned int bcount;            // buffer counter	
 
 		int rl;
 		int hist_point;                  // number of samples to show

@@ -69,7 +69,7 @@ class FADC500gui
 		int nEvent;
 		int nModule;
 		int tcbflag = 0;
-		int runnumber = 0;
+		unsigned long runnumber = 1;
 		TString saveFile;
 		TString directory;
 
