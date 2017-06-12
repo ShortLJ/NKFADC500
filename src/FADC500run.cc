@@ -72,16 +72,16 @@ int FADC500run::FADC500DAQRun(TString ifilename, int nEvent, int nModule)
 
 			if (bcount > 16)
 			{
-				printf("Module %d DRAM Memory = %ld\n",sid[imod],bcount);
+				printf("Module %d DRAM Memory = %u\n",sid[imod],bcount);
 				fadc->FADC500IBSread_DATA(sid[imod], 32, data);
 				fwrite(data, 1, 32768, fp);
 				if (printoutflag == 1)	PrintInfo();
 				gSystem->ProcessEvents();
+				iEvent = iEvent + 32768/datasize[imod];
 			}
 
 			if (flag == 0)	break;			
 			gSystem->ProcessEvents();
-			iEvent = iEvent + 32768/datasize[imod];
 
 		}
 
@@ -237,7 +237,7 @@ void FADC500run::PrintInfo()
 		if (tdcflag == 1)	DrawTDCInfo(i);
 		gSystem->ProcessEvents();
 		printf("module ID = %d, channel ID = %d\n", mid, channel);
-		printf("data_length = %d, run_number = %d, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
+		printf("data_length = %d, run_number = %lu, trigger_type = %d, trigger_destination = %d\n", data_length, run_number, trigger_type, trigger_destination);
 		printf("trigger_number = %d, local_tnum = %d, trigger_pattern = %d\n", trigger_number, local_tnum, trigger_pattern);
 		printf("trigger time = %ld, local starting time = %ld\n", ttime, ltime);
 		printf("-------------------------------------------------------------------------------------------------------\n");
