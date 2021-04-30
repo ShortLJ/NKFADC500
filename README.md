@@ -1,4 +1,4 @@
-# NKFADC500\
+# NKFADC500
 GUI program builder for NKFADC500 DAQ system.
 
 Prerequisite: libUSB-devel\
