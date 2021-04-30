@@ -9,5 +9,5 @@ Install\
    then, you can run NKFADCgui on by\
   $ root NKFADC500.c
 
-If failure on TCB, check permission of usb devices. 
+If failure on TCB, check permission of usb devices. \
   $ sudo sh TCB_permission.sh
